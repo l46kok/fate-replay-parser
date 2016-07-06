@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>MySql.Data.Entity</id>
+    <version>6.7.2-beta-ef6</version>
+    <authors>Oracle</authors>
+    <owners>Oracle</owners>
+    <licenseUrl>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</licenseUrl>
+    <projectUrl>http://dev.mysql.com/downloads/connector/net/</projectUrl>
+    <iconUrl>http://www.mysql.com/common/logos/logo-mysql-170x115.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Connector/Net is a fully-managed ADO.NET driver for MySQL.</description>
+    <releaseNotes>Compiled with the new Entity Framework 6 namespaces.</releaseNotes>
+    <copyright>Copyright (c) 2004, 2011, Oracle and/or its affiliates. All rights reserved.</copyright>
+    <tags>mysql entityframework</tags>
+  </metadata>
+</package>
