@@ -6,18 +6,11 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using NDesk.Options;
 using NLog;
 using ReplayParser.Data;
 using ReplayParser.Database;
-using ReplayParser.Parser;
-using ReplayParser.Validators;
 
 namespace ReplayParser
 {
@@ -97,7 +90,7 @@ namespace ReplayParser
                 {
                     logger.Trace("-----------------------------------------");
                     logger.Trace("Started parsing replay file: " + file.Name);
-                    FateReplayParser fateReplayParser = new FateReplayParser(file.FullName);
+                    Parser.FateReplayParser fateReplayParser = new Parser.FateReplayParser(file.FullName);
                     ReplayData fateReplayData = fateReplayParser.ParseReplayData();
                     fateReplayData.MapVersion = configHandler.MapVersion;
                     logger.Trace("Finished parsing replay file: " + file.Name);

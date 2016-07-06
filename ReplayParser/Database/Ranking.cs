@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ReplayParser.Database
+namespace FateReplayParser.Database
 {
     using System;
     using System.Collections.Generic;

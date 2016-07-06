@@ -54,9 +54,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReplayParser\ReplayParser.csproj">
+    <ProjectReference Include="..\ReplayParser\FateReplayParser.csproj">
       <Project>{4DADCDA3-6910-4B16-9E72-3E9205DAA4D0}</Project>
-      <Name>ReplayParser</Name>
+      <Name>FateReplayParser</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

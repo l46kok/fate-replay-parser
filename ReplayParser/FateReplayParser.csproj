@@ -7,8 +7,8 @@
     <ProjectGuid>{4DADCDA3-6910-4B16-9E72-3E9205DAA4D0}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReplayParser</RootNamespace>
-    <AssemblyName>ReplayParser</AssemblyName>
+    <RootNamespace>FateReplayParser</RootNamespace>
+    <AssemblyName>FateReplayParser</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
