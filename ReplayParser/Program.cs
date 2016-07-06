@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using NDesk.Options;
@@ -103,13 +104,16 @@ namespace ReplayParser
                     
                     
                     FateDBModule dbModule = new FateDBModule();
-                    if (FateGameValidator.IsFateGameValid(fateReplayData))
-                    {
+
                         logger.Trace("Inserting replay data into database");
                         dbModule.InsertReplayData(fateReplayData, _serverName);
-                    }
                     
-                    
+                    /*                    if (FateGameValidator.IsFateGameValid(fateReplayData))
+                                        {
+                                            logger.Trace("Inserting replay data into database");
+                                            dbModule.InsertReplayData(fateReplayData, _serverName);
+                                        }*/
+
                     file.MoveTo(Path.Combine(parsedReplayDirectory.FullName,file.Name));
 
                 }
@@ -117,7 +121,16 @@ namespace ReplayParser
                 {
                     logger.Error("Error occurred on parsing the following replay file: " + file.Name + Environment.NewLine);
                     logger.Trace(ex + Environment.NewLine);
-                    file.MoveTo(Path.Combine(errorReplayDirectory.FullName, file.Name));
+                    string pathToMoveTo = Path.Combine(errorReplayDirectory.FullName, file.Name);
+                    if (File.Exists(pathToMoveTo))
+                    {
+                        file.Delete();
+                    }
+                    else
+                    {
+                        file.MoveTo(Path.Combine(errorReplayDirectory.FullName, file.Name));
+                    }
+                    
                 }
             }
             logger.Trace("Replay parsing complete");

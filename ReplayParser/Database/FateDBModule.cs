@@ -15,12 +15,13 @@ namespace ReplayParser.Database
         private static Logger logger = LogManager.GetCurrentClassLogger();
         public void InsertReplayData(ReplayData replayData, string serverName)
         {
-            using (var db = new fa_ranking_systemEntities())
+            using (var db = new frsEntities())
             {
                 using (var trans = db.Database.BeginTransaction())
                 {
                     try
                     {
+                        
                         if (!db.Server.Any(x => x.ServerName == serverName && x.IsServiced))
                             throw new Exception(
                                 String.Format("DB Error: Either server name doesn't exist or it is not serviced: {0}",
@@ -58,7 +59,7 @@ namespace ReplayParser.Database
         }
 
         private static void AddPlayerHeroStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers,
-                                                        fa_ranking_systemEntities db, Server dbServer)
+                                                        frsEntities db, Server dbServer)
         {
             foreach (Player player in dbPlayers)
             {
@@ -98,7 +99,7 @@ namespace ReplayParser.Database
             }
         }
 
-        private void AddPlayerStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers, fa_ranking_systemEntities db,
+        private void AddPlayerStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers, frsEntities db,
                                              Server dbServer, Game fateGame)
         {
             foreach (Player player in dbPlayers)
@@ -161,7 +162,7 @@ namespace ReplayParser.Database
         }
 
         private List<GamePlayerDetail> GetGamePlayerDetailList(ReplayData replayData, IEnumerable<Player> dbPlayers, Game fateGame, Server dbServer,
-                                                  fa_ranking_systemEntities db)
+                                                  frsEntities db)
         {
             List<GamePlayerDetail> fateGamePlayerDetailList = new List<GamePlayerDetail>();
             foreach (Player player in dbPlayers)
@@ -208,7 +209,7 @@ namespace ReplayParser.Database
             return fateGamePlayerDetailList;
         }
 
-        private Game GetNewGame(ReplayData replayData, Server dbServer, fa_ranking_systemEntities db)
+        private Game GetNewGame(ReplayData replayData, Server dbServer, frsEntities db)
         {
             int gameId = 0;
             if (db.Game.Any())
@@ -239,7 +240,7 @@ namespace ReplayParser.Database
         }
 
         private List<Player> AddPlayerList(ReplayData replayData, IQueryable<Player> dbPlayers, Server dbServer,
-                                             fa_ranking_systemEntities db)
+                                             frsEntities db)
         {
             List<Player> playerList = new List<Player>();
             int playerId = 0;

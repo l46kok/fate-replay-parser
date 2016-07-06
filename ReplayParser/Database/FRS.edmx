@@ -1,0 +1,780 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="frsModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="game">
+          <Key>
+            <PropertyRef Name="GameID" />
+          </Key>
+          <Property Name="GameID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_ServerID" Type="int" Nullable="false" />
+          <Property Name="GameName" Type="text" Nullable="false" />
+          <Property Name="PlayedDate" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="Duration" Type="time" Precision="0" Nullable="false" />
+          <Property Name="Result" Type="enum" Nullable="false" />
+          <Property Name="MapVersion" Type="text" Nullable="false" />
+          <Property Name="ReplayUrl" Type="text" />
+          <Property Name="MatchType" Type="enum" />
+          <Property Name="Log" Type="mediumtext" />
+          <Property Name="TeamOneWinCount" Type="int" Nullable="false" />
+          <Property Name="TeamTwoWinCount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="gameplayerdetail">
+          <Key>
+            <PropertyRef Name="GamePlayerDetailID" />
+            <PropertyRef Name="FK_GameID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+            <PropertyRef Name="FK_HeroTypeID" />
+          </Key>
+          <Property Name="GamePlayerDetailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_GameID" Type="int" Nullable="false" />
+          <Property Name="FK_PlayerID" Type="int" Nullable="false" />
+          <Property Name="FK_ServerID" Type="int" Nullable="false" />
+          <Property Name="FK_HeroTypeID" Type="int" Nullable="false" />
+          <Property Name="Kills" Type="int" Nullable="false" />
+          <Property Name="Deaths" Type="int" Nullable="false" />
+          <Property Name="Assists" Type="int" Nullable="false" />
+          <Property Name="Team" Type="enum" Nullable="false" />
+          <Property Name="Result" Type="enum" Nullable="false" />
+          <Property Name="ScoreDiff" Type="int" Nullable="false" />
+          <Property Name="ELODiff" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="herotype">
+          <Key>
+            <PropertyRef Name="HeroTypeID" />
+          </Key>
+          <Property Name="HeroTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HeroUnitTypeID" Type="varchar" MaxLength="4" Nullable="false" />
+        </EntityType>
+        <EntityType Name="herotypename">
+          <Key>
+            <PropertyRef Name="HeroTypeNameID" />
+            <PropertyRef Name="FK_HeroTypeID" />
+          </Key>
+          <Property Name="HeroTypeNameID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_HeroTypeID" Type="int" Nullable="false" />
+          <Property Name="Language" Type="enum" Nullable="false" />
+          <Property Name="HeroName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="HeroTitle" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="player">
+          <Key>
+            <PropertyRef Name="PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+          </Key>
+          <Property Name="PlayerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_ServerID" Type="int" Nullable="false" />
+          <Property Name="PlayerName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="RegDate" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="IsBanned" Type="bool" Nullable="false" />
+          <Property Name="LastUpdatedOn" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="LastUpdatedBy" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="BannedOn" Type="datetime" Precision="0" />
+          <Property Name="UnbannedOn" Type="datetime" Precision="0" />
+        </EntityType>
+        <EntityType Name="playerherostat">
+          <Key>
+            <PropertyRef Name="PlayerHeroStatID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+            <PropertyRef Name="FK_HeroTypeID" />
+          </Key>
+          <Property Name="PlayerHeroStatID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_PlayerID" Type="int" Nullable="false" />
+          <Property Name="FK_ServerID" Type="int" Nullable="false" />
+          <Property Name="FK_HeroTypeID" Type="int" Nullable="false" />
+          <Property Name="HeroPlayCount" Type="int" Nullable="false" />
+          <Property Name="TotalHeroKills" Type="int" Nullable="false" />
+          <Property Name="TotalHeroDeaths" Type="int" Nullable="false" />
+          <Property Name="TotalHeroAssists" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="playerstat">
+          <Key>
+            <PropertyRef Name="PlayerStatID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+          </Key>
+          <Property Name="PlayerStatID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_PlayerID" Type="int" Nullable="false" />
+          <Property Name="FK_ServerID" Type="int" Nullable="false" />
+          <Property Name="Win" Type="int" Nullable="false" />
+          <Property Name="Loss" Type="int" Nullable="false" />
+          <Property Name="PlayCount" Type="int" Nullable="false" />
+          <Property Name="ELO" Type="int" Nullable="false" />
+          <Property Name="Score" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ranking">
+          <Key>
+            <PropertyRef Name="RankID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+          </Key>
+          <Property Name="RankID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_PlayerID" Type="int" Nullable="false" />
+          <Property Name="FK_ServerID" Type="int" Nullable="false" />
+          <Property Name="PlayerStatID" Type="int" Nullable="false" />
+          <Property Name="PlayerRank" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="server">
+          <Key>
+            <PropertyRef Name="ServerID" />
+          </Key>
+          <Property Name="ServerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ServerName" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsServiced" Type="bool" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_Game_Server">
+          <End Role="server" Type="Self.server" Multiplicity="1" />
+          <End Role="game" Type="Self.game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="game">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_GamePlayerDetail_Game1">
+          <End Role="game" Type="Self.game" Multiplicity="1" />
+          <End Role="gameplayerdetail" Type="Self.gameplayerdetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="game">
+              <PropertyRef Name="GameID" />
+            </Principal>
+            <Dependent Role="gameplayerdetail">
+              <PropertyRef Name="FK_GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_GamePlayerDetail_HeroType1">
+          <End Role="herotype" Type="Self.herotype" Multiplicity="1" />
+          <End Role="gameplayerdetail" Type="Self.gameplayerdetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="herotype">
+              <PropertyRef Name="HeroTypeID" />
+            </Principal>
+            <Dependent Role="gameplayerdetail">
+              <PropertyRef Name="FK_HeroTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'fk_GamePlayerDetail_Player1' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="fk_GamePlayerDetail_Player1" />-->
+        <Association Name="fk_GamePlayerDetail_Server1">
+          <End Role="server" Type="Self.server" Multiplicity="1" />
+          <End Role="gameplayerdetail" Type="Self.gameplayerdetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="gameplayerdetail">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_HeroTypeName_HeroType1">
+          <End Role="herotype" Type="Self.herotype" Multiplicity="1" />
+          <End Role="herotypename" Type="Self.herotypename" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="herotype">
+              <PropertyRef Name="HeroTypeID" />
+            </Principal>
+            <Dependent Role="herotypename">
+              <PropertyRef Name="FK_HeroTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Player_Server">
+          <End Role="server" Type="Self.server" Multiplicity="1" />
+          <End Role="player" Type="Self.player" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="player">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_PlayerHeroStat_HeroType1">
+          <End Role="herotype" Type="Self.herotype" Multiplicity="1" />
+          <End Role="playerherostat" Type="Self.playerherostat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="herotype">
+              <PropertyRef Name="HeroTypeID" />
+            </Principal>
+            <Dependent Role="playerherostat">
+              <PropertyRef Name="FK_HeroTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'fk_PlayerHeroStat_Player1' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="fk_PlayerHeroStat_Player1" />-->
+        <Association Name="fk_PlayerHeroStat_Server1">
+          <End Role="server" Type="Self.server" Multiplicity="1" />
+          <End Role="playerherostat" Type="Self.playerherostat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="playerherostat">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'fk_PlayerStat_Player1' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="fk_PlayerStat_Player1" />-->
+        <Association Name="fk_PlayerStat_Server1">
+          <End Role="server" Type="Self.server" Multiplicity="1" />
+          <End Role="playerstat" Type="Self.playerstat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="playerstat">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'fk_Ranking_Player1' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="fk_Ranking_Player1" />-->
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="fk_Ranking_PlayerStat1" />-->
+        <Association Name="fk_Ranking_Server1">
+          <End Role="server" Type="Self.server" Multiplicity="1" />
+          <End Role="ranking" Type="Self.ranking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="ranking">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="frsModelStoreContainer">
+          <EntitySet Name="game" EntityType="Self.game" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="gameplayerdetail" EntityType="Self.gameplayerdetail" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="herotype" EntityType="Self.herotype" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="herotypename" EntityType="Self.herotypename" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="player" EntityType="Self.player" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="playerherostat" EntityType="Self.playerherostat" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="playerstat" EntityType="Self.playerstat" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="ranking" EntityType="Self.ranking" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="server" EntityType="Self.server" Schema="frs" store:Type="Tables" />
+          <AssociationSet Name="fk_Game_Server" Association="Self.fk_Game_Server">
+            <End Role="server" EntitySet="server" />
+            <End Role="game" EntitySet="game" />
+          </AssociationSet>
+          <AssociationSet Name="fk_GamePlayerDetail_Game1" Association="Self.fk_GamePlayerDetail_Game1">
+            <End Role="game" EntitySet="game" />
+            <End Role="gameplayerdetail" EntitySet="gameplayerdetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_GamePlayerDetail_HeroType1" Association="Self.fk_GamePlayerDetail_HeroType1">
+            <End Role="herotype" EntitySet="herotype" />
+            <End Role="gameplayerdetail" EntitySet="gameplayerdetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_GamePlayerDetail_Server1" Association="Self.fk_GamePlayerDetail_Server1">
+            <End Role="server" EntitySet="server" />
+            <End Role="gameplayerdetail" EntitySet="gameplayerdetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_HeroTypeName_HeroType1" Association="Self.fk_HeroTypeName_HeroType1">
+            <End Role="herotype" EntitySet="herotype" />
+            <End Role="herotypename" EntitySet="herotypename" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Player_Server" Association="Self.fk_Player_Server">
+            <End Role="server" EntitySet="server" />
+            <End Role="player" EntitySet="player" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PlayerHeroStat_HeroType1" Association="Self.fk_PlayerHeroStat_HeroType1">
+            <End Role="herotype" EntitySet="herotype" />
+            <End Role="playerherostat" EntitySet="playerherostat" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PlayerHeroStat_Server1" Association="Self.fk_PlayerHeroStat_Server1">
+            <End Role="server" EntitySet="server" />
+            <End Role="playerherostat" EntitySet="playerherostat" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PlayerStat_Server1" Association="Self.fk_PlayerStat_Server1">
+            <End Role="server" EntitySet="server" />
+            <End Role="playerstat" EntitySet="playerstat" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Ranking_Server1" Association="Self.fk_Ranking_Server1">
+            <End Role="server" EntitySet="server" />
+            <End Role="ranking" EntitySet="ranking" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="frsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="GameID" />
+          </Key>
+          <Property Name="GameID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GameName" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PlayedDate" Type="DateTime" Nullable="false" />
+          <Property Name="Duration" Type="Time" Nullable="false" />
+          <Property Name="Result" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MapVersion" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ReplayUrl" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" />
+          <Property Name="MatchType" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="GamePlayerDetail" Relationship="Self.fk_GamePlayerDetail_Game1" FromRole="game" ToRole="gameplayerdetail" />
+          <Property Name="FK_ServerID" Type="Int32" Nullable="false" />
+          <Property Name="Log" Type="String" MaxLength="16777215" FixedLength="false" Unicode="false" />
+          <Property Name="TeamOneWinCount" Type="Int32" Nullable="false" />
+          <Property Name="TeamTwoWinCount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Server" Relationship="frsModel.fk_Game_Server" FromRole="Game" ToRole="Server" />
+        </EntityType>
+        <EntityType Name="GamePlayerDetail">
+          <Key>
+            <PropertyRef Name="GamePlayerDetailID" />
+            <PropertyRef Name="FK_GameID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+            <PropertyRef Name="FK_HeroTypeID" />
+          </Key>
+          <Property Name="GamePlayerDetailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_GameID" Type="Int32" Nullable="false" />
+          <Property Name="FK_PlayerID" Type="Int32" Nullable="false" />
+          <Property Name="FK_ServerID" Type="Int32" Nullable="false" />
+          <Property Name="FK_HeroTypeID" Type="Int32" Nullable="false" />
+          <Property Name="Kills" Type="Int32" Nullable="false" />
+          <Property Name="Deaths" Type="Int32" Nullable="false" />
+          <Property Name="Assists" Type="Int32" Nullable="false" />
+          <Property Name="Team" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Result" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ScoreDiff" Type="Int32" Nullable="false" />
+          <Property Name="ELODiff" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Game" Relationship="Self.fk_GamePlayerDetail_Game1" FromRole="gameplayerdetail" ToRole="game" />
+          <NavigationProperty Name="HeroType" Relationship="Self.fk_GamePlayerDetail_HeroType1" FromRole="gameplayerdetail" ToRole="herotype" />
+          <NavigationProperty Name="Server" Relationship="Self.fk_GamePlayerDetail_Server1" FromRole="gameplayerdetail" ToRole="server" />
+        </EntityType>
+        <EntityType Name="HeroType">
+          <Key>
+            <PropertyRef Name="HeroTypeID" />
+          </Key>
+          <Property Name="HeroTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HeroUnitTypeID" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="GamePlayerDetail" Relationship="Self.fk_GamePlayerDetail_HeroType1" FromRole="herotype" ToRole="gameplayerdetail" />
+          <NavigationProperty Name="HeroTypeName" Relationship="Self.fk_HeroTypeName_HeroType1" FromRole="herotype" ToRole="herotypename" />
+          <NavigationProperty Name="PlayerHeroStat" Relationship="Self.fk_PlayerHeroStat_HeroType1" FromRole="herotype" ToRole="playerherostat" />
+        </EntityType>
+        <EntityType Name="HeroTypeName">
+          <Key>
+            <PropertyRef Name="HeroTypeNameID" />
+            <PropertyRef Name="FK_HeroTypeID" />
+          </Key>
+          <Property Name="HeroTypeNameID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_HeroTypeID" Type="Int32" Nullable="false" />
+          <Property Name="Language" Type="String" MaxLength="65532" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="HeroName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="HeroTitle" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="HeroType" Relationship="Self.fk_HeroTypeName_HeroType1" FromRole="herotypename" ToRole="herotype" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+          </Key>
+          <Property Name="PlayerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_ServerID" Type="Int32" Nullable="false" />
+          <Property Name="PlayerName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RegDate" Type="DateTime" Nullable="false" />
+          <Property Name="IsBanned" Type="Boolean" Nullable="false" />
+          <Property Name="LastUpdatedOn" Type="DateTime" Nullable="false" />
+          <Property Name="LastUpdatedBy" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BannedOn" Type="DateTime" />
+          <Property Name="UnbannedOn" Type="DateTime" />
+          <NavigationProperty Name="Server" Relationship="Self.fk_Player_Server" FromRole="player" ToRole="server" />
+        </EntityType>
+        <EntityType Name="PlayerHeroStat">
+          <Key>
+            <PropertyRef Name="PlayerHeroStatID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+            <PropertyRef Name="FK_HeroTypeID" />
+          </Key>
+          <Property Name="PlayerHeroStatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_PlayerID" Type="Int32" Nullable="false" />
+          <Property Name="FK_ServerID" Type="Int32" Nullable="false" />
+          <Property Name="FK_HeroTypeID" Type="Int32" Nullable="false" />
+          <Property Name="HeroPlayCount" Type="Int32" Nullable="false" />
+          <Property Name="TotalHeroKills" Type="Int32" Nullable="false" />
+          <Property Name="TotalHeroDeaths" Type="Int32" Nullable="false" />
+          <Property Name="TotalHeroAssists" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="HeroType" Relationship="Self.fk_PlayerHeroStat_HeroType1" FromRole="playerherostat" ToRole="herotype" />
+          <NavigationProperty Name="Server" Relationship="Self.fk_PlayerHeroStat_Server1" FromRole="playerherostat" ToRole="server" />
+        </EntityType>
+        <EntityType Name="PlayerStat">
+          <Key>
+            <PropertyRef Name="PlayerStatID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+          </Key>
+          <Property Name="PlayerStatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_PlayerID" Type="Int32" Nullable="false" />
+          <Property Name="FK_ServerID" Type="Int32" Nullable="false" />
+          <Property Name="Win" Type="Int32" Nullable="false" />
+          <Property Name="Loss" Type="Int32" Nullable="false" />
+          <Property Name="PlayCount" Type="Int32" Nullable="false" />
+          <Property Name="ELO" Type="Int32" Nullable="false" />
+          <Property Name="Score" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Server" Relationship="Self.fk_PlayerStat_Server1" FromRole="playerstat" ToRole="server" />
+        </EntityType>
+        <EntityType Name="Ranking">
+          <Key>
+            <PropertyRef Name="RankID" />
+            <PropertyRef Name="FK_PlayerID" />
+            <PropertyRef Name="FK_ServerID" />
+          </Key>
+          <Property Name="RankID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_PlayerID" Type="Int32" Nullable="false" />
+          <Property Name="FK_ServerID" Type="Int32" Nullable="false" />
+          <Property Name="PlayerStatID" Type="Int32" Nullable="false" />
+          <Property Name="PlayerRank" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Server" Relationship="Self.fk_Ranking_Server1" FromRole="ranking" ToRole="server" />
+        </EntityType>
+        <EntityType Name="Server">
+          <Key>
+            <PropertyRef Name="ServerID" />
+          </Key>
+          <Property Name="ServerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ServerName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsServiced" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="GamePlayerDetail" Relationship="Self.fk_GamePlayerDetail_Server1" FromRole="server" ToRole="gameplayerdetail" />
+          <NavigationProperty Name="Player" Relationship="Self.fk_Player_Server" FromRole="server" ToRole="player" />
+          <NavigationProperty Name="PlayerHeroStat" Relationship="Self.fk_PlayerHeroStat_Server1" FromRole="server" ToRole="playerherostat" />
+          <NavigationProperty Name="PlayerStat" Relationship="Self.fk_PlayerStat_Server1" FromRole="server" ToRole="playerstat" />
+          <NavigationProperty Name="Ranking" Relationship="Self.fk_Ranking_Server1" FromRole="server" ToRole="ranking" />
+          <NavigationProperty Name="Game" Relationship="frsModel.fk_Game_Server" FromRole="Server" ToRole="Game" />
+        </EntityType>
+        <Association Name="fk_GamePlayerDetail_Game1">
+          <End Role="game" Type="frsModel.Game" Multiplicity="1" />
+          <End Role="gameplayerdetail" Type="frsModel.GamePlayerDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="game">
+              <PropertyRef Name="GameID" />
+            </Principal>
+            <Dependent Role="gameplayerdetail">
+              <PropertyRef Name="FK_GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_GamePlayerDetail_HeroType1">
+          <End Role="herotype" Type="frsModel.HeroType" Multiplicity="1" />
+          <End Role="gameplayerdetail" Type="frsModel.GamePlayerDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="herotype">
+              <PropertyRef Name="HeroTypeID" />
+            </Principal>
+            <Dependent Role="gameplayerdetail">
+              <PropertyRef Name="FK_HeroTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_GamePlayerDetail_Server1">
+          <End Role="server" Type="frsModel.Server" Multiplicity="1" />
+          <End Role="gameplayerdetail" Type="frsModel.GamePlayerDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="gameplayerdetail">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_HeroTypeName_HeroType1">
+          <End Role="herotype" Type="frsModel.HeroType" Multiplicity="1" />
+          <End Role="herotypename" Type="frsModel.HeroTypeName" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="herotype">
+              <PropertyRef Name="HeroTypeID" />
+            </Principal>
+            <Dependent Role="herotypename">
+              <PropertyRef Name="FK_HeroTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_PlayerHeroStat_HeroType1">
+          <End Role="herotype" Type="frsModel.HeroType" Multiplicity="1" />
+          <End Role="playerherostat" Type="frsModel.PlayerHeroStat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="herotype">
+              <PropertyRef Name="HeroTypeID" />
+            </Principal>
+            <Dependent Role="playerherostat">
+              <PropertyRef Name="FK_HeroTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Player_Server">
+          <End Role="server" Type="frsModel.Server" Multiplicity="1" />
+          <End Role="player" Type="frsModel.Player" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="player">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_PlayerHeroStat_Server1">
+          <End Role="server" Type="frsModel.Server" Multiplicity="1" />
+          <End Role="playerherostat" Type="frsModel.PlayerHeroStat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="playerherostat">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_PlayerStat_Server1">
+          <End Role="server" Type="frsModel.Server" Multiplicity="1" />
+          <End Role="playerstat" Type="frsModel.PlayerStat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="playerstat">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Ranking_Server1">
+          <End Role="server" Type="frsModel.Server" Multiplicity="1" />
+          <End Role="ranking" Type="frsModel.Ranking" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="ranking">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="frsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Game" EntityType="frsModel.Game" />
+          <EntitySet Name="GamePlayerDetail" EntityType="frsModel.GamePlayerDetail" />
+          <EntitySet Name="HeroType" EntityType="frsModel.HeroType" />
+          <EntitySet Name="HeroTypeName" EntityType="frsModel.HeroTypeName" />
+          <EntitySet Name="Player" EntityType="frsModel.Player" />
+          <EntitySet Name="PlayerHeroStat" EntityType="frsModel.PlayerHeroStat" />
+          <EntitySet Name="PlayerStat" EntityType="frsModel.PlayerStat" />
+          <EntitySet Name="Ranking" EntityType="frsModel.Ranking" />
+          <EntitySet Name="Server" EntityType="frsModel.Server" />
+          <AssociationSet Name="fk_GamePlayerDetail_Game1" Association="Self.fk_GamePlayerDetail_Game1">
+            <End Role="game" EntitySet="Game" />
+            <End Role="gameplayerdetail" EntitySet="GamePlayerDetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_GamePlayerDetail_HeroType1" Association="Self.fk_GamePlayerDetail_HeroType1">
+            <End Role="herotype" EntitySet="HeroType" />
+            <End Role="gameplayerdetail" EntitySet="GamePlayerDetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_GamePlayerDetail_Server1" Association="Self.fk_GamePlayerDetail_Server1">
+            <End Role="server" EntitySet="Server" />
+            <End Role="gameplayerdetail" EntitySet="GamePlayerDetail" />
+          </AssociationSet>
+          <AssociationSet Name="fk_HeroTypeName_HeroType1" Association="Self.fk_HeroTypeName_HeroType1">
+            <End Role="herotype" EntitySet="HeroType" />
+            <End Role="herotypename" EntitySet="HeroTypeName" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PlayerHeroStat_HeroType1" Association="Self.fk_PlayerHeroStat_HeroType1">
+            <End Role="herotype" EntitySet="HeroType" />
+            <End Role="playerherostat" EntitySet="PlayerHeroStat" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Player_Server" Association="Self.fk_Player_Server">
+            <End Role="server" EntitySet="Server" />
+            <End Role="player" EntitySet="Player" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PlayerHeroStat_Server1" Association="Self.fk_PlayerHeroStat_Server1">
+            <End Role="server" EntitySet="Server" />
+            <End Role="playerherostat" EntitySet="PlayerHeroStat" />
+          </AssociationSet>
+          <AssociationSet Name="fk_PlayerStat_Server1" Association="Self.fk_PlayerStat_Server1">
+            <End Role="server" EntitySet="Server" />
+            <End Role="playerstat" EntitySet="PlayerStat" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Ranking_Server1" Association="Self.fk_Ranking_Server1">
+            <End Role="server" EntitySet="Server" />
+            <End Role="ranking" EntitySet="Ranking" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Game_Server" Association="frsModel.fk_Game_Server">
+            <End Role="Server" EntitySet="Server" />
+            <End Role="Game" EntitySet="Game" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="fk_Game_Server">
+          <End Type="frsModel.Server" Role="Server" Multiplicity="1" />
+          <End Type="frsModel.Game" Role="Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Server">
+              <PropertyRef Name="ServerID" />
+            </Principal>
+            <Dependent Role="Game">
+              <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="frsModelStoreContainer" CdmEntityContainer="frsEntities">
+          <EntitySetMapping Name="Game">
+            <EntityTypeMapping TypeName="frsModel.Game">
+              <MappingFragment StoreEntitySet="game">
+                <ScalarProperty Name="TeamTwoWinCount" ColumnName="TeamTwoWinCount" />
+                <ScalarProperty Name="TeamOneWinCount" ColumnName="TeamOneWinCount" />
+                <ScalarProperty Name="Log" ColumnName="Log" />
+                <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="GameName" ColumnName="GameName" />
+                <ScalarProperty Name="PlayedDate" ColumnName="PlayedDate" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="MapVersion" ColumnName="MapVersion" />
+                <ScalarProperty Name="ReplayUrl" ColumnName="ReplayUrl" />
+                <ScalarProperty Name="MatchType" ColumnName="MatchType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GamePlayerDetail">
+            <EntityTypeMapping TypeName="frsModel.GamePlayerDetail">
+              <MappingFragment StoreEntitySet="gameplayerdetail">
+                <ScalarProperty Name="GamePlayerDetailID" ColumnName="GamePlayerDetailID" />
+                <ScalarProperty Name="FK_GameID" ColumnName="FK_GameID" />
+                <ScalarProperty Name="FK_PlayerID" ColumnName="FK_PlayerID" />
+                <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
+                <ScalarProperty Name="FK_HeroTypeID" ColumnName="FK_HeroTypeID" />
+                <ScalarProperty Name="Kills" ColumnName="Kills" />
+                <ScalarProperty Name="Deaths" ColumnName="Deaths" />
+                <ScalarProperty Name="Assists" ColumnName="Assists" />
+                <ScalarProperty Name="Team" ColumnName="Team" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="ScoreDiff" ColumnName="ScoreDiff" />
+                <ScalarProperty Name="ELODiff" ColumnName="ELODiff" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HeroType">
+            <EntityTypeMapping TypeName="frsModel.HeroType">
+              <MappingFragment StoreEntitySet="herotype">
+                <ScalarProperty Name="HeroTypeID" ColumnName="HeroTypeID" />
+                <ScalarProperty Name="HeroUnitTypeID" ColumnName="HeroUnitTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HeroTypeName">
+            <EntityTypeMapping TypeName="frsModel.HeroTypeName">
+              <MappingFragment StoreEntitySet="herotypename">
+                <ScalarProperty Name="HeroTypeNameID" ColumnName="HeroTypeNameID" />
+                <ScalarProperty Name="FK_HeroTypeID" ColumnName="FK_HeroTypeID" />
+                <ScalarProperty Name="Language" ColumnName="Language" />
+                <ScalarProperty Name="HeroName" ColumnName="HeroName" />
+                <ScalarProperty Name="HeroTitle" ColumnName="HeroTitle" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Player">
+            <EntityTypeMapping TypeName="frsModel.Player">
+              <MappingFragment StoreEntitySet="player">
+                <ScalarProperty Name="PlayerID" ColumnName="PlayerID" />
+                <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
+                <ScalarProperty Name="PlayerName" ColumnName="PlayerName" />
+                <ScalarProperty Name="RegDate" ColumnName="RegDate" />
+                <ScalarProperty Name="IsBanned" ColumnName="IsBanned" />
+                <ScalarProperty Name="LastUpdatedOn" ColumnName="LastUpdatedOn" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="BannedOn" ColumnName="BannedOn" />
+                <ScalarProperty Name="UnbannedOn" ColumnName="UnbannedOn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayerHeroStat">
+            <EntityTypeMapping TypeName="frsModel.PlayerHeroStat">
+              <MappingFragment StoreEntitySet="playerherostat">
+                <ScalarProperty Name="PlayerHeroStatID" ColumnName="PlayerHeroStatID" />
+                <ScalarProperty Name="FK_PlayerID" ColumnName="FK_PlayerID" />
+                <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
+                <ScalarProperty Name="FK_HeroTypeID" ColumnName="FK_HeroTypeID" />
+                <ScalarProperty Name="HeroPlayCount" ColumnName="HeroPlayCount" />
+                <ScalarProperty Name="TotalHeroKills" ColumnName="TotalHeroKills" />
+                <ScalarProperty Name="TotalHeroDeaths" ColumnName="TotalHeroDeaths" />
+                <ScalarProperty Name="TotalHeroAssists" ColumnName="TotalHeroAssists" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayerStat">
+            <EntityTypeMapping TypeName="frsModel.PlayerStat">
+              <MappingFragment StoreEntitySet="playerstat">
+                <ScalarProperty Name="PlayerStatID" ColumnName="PlayerStatID" />
+                <ScalarProperty Name="FK_PlayerID" ColumnName="FK_PlayerID" />
+                <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
+                <ScalarProperty Name="Win" ColumnName="Win" />
+                <ScalarProperty Name="Loss" ColumnName="Loss" />
+                <ScalarProperty Name="PlayCount" ColumnName="PlayCount" />
+                <ScalarProperty Name="ELO" ColumnName="ELO" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ranking">
+            <EntityTypeMapping TypeName="frsModel.Ranking">
+              <MappingFragment StoreEntitySet="ranking">
+                <ScalarProperty Name="RankID" ColumnName="RankID" />
+                <ScalarProperty Name="FK_PlayerID" ColumnName="FK_PlayerID" />
+                <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
+                <ScalarProperty Name="PlayerStatID" ColumnName="PlayerStatID" />
+                <ScalarProperty Name="PlayerRank" ColumnName="PlayerRank" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Server">
+            <EntityTypeMapping TypeName="frsModel.Server">
+              <MappingFragment StoreEntitySet="server">
+                <ScalarProperty Name="ServerID" ColumnName="ServerID" />
+                <ScalarProperty Name="ServerName" ColumnName="ServerName" />
+                <ScalarProperty Name="IsServiced" ColumnName="IsServiced" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

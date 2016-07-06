@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b982cf6a07ae45ac83460a010631d5aa" Name="Diagram1">
+        <EntityTypeShape EntityType="frsModel.Game" Width="1.5" PointX="0.75" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.GamePlayerDetail" Width="1.5" PointX="3" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.HeroType" Width="1.5" PointX="0.75" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.HeroTypeName" Width="1.5" PointX="3" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.Player" Width="1.5" PointX="3" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.PlayerHeroStat" Width="1.5" PointX="6" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.PlayerStat" Width="1.5" PointX="3" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.Ranking" Width="1.5" PointX="3" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="frsModel.Server" Width="1.5" PointX="0.75" PointY="9.25" IsExpanded="true" />
+        <AssociationConnector Association="frsModel.fk_GamePlayerDetail_Game1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_GamePlayerDetail_HeroType1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_GamePlayerDetail_Server1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_HeroTypeName_HeroType1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_PlayerHeroStat_HeroType1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_Player_Server" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_PlayerHeroStat_Server1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_PlayerStat_Server1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_Ranking_Server1" ManuallyRouted="false" />
+        <AssociationConnector Association="frsModel.fk_Game_Server" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

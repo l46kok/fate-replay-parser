@@ -349,7 +349,7 @@ namespace ReplayParser.Parser
             {
                 if (String.IsNullOrEmpty(player.ServantId))
                 {
-                    if (player.Kills != 0 && player.Deaths != 0 && player.Assists == 0)
+                    if (player.Kills != 0 || player.Deaths != 0 || player.Assists != 0)
                         throw new InvalidDataException(String.Format("SetObservers error. No servant selected but has kills/deaths/assists: {0}",player.PlayerName));
                     player.IsObserver = true;
                 }
