@@ -398,8 +398,11 @@ namespace ReplayParser.Parser
                 string[] playerKillDeathData = eventDetail.Split(new[] { "//" }, StringSplitOptions.None); //Player1(Killer)//Player2
                 int killPlayerId = int.Parse(playerKillDeathData[0]);
                 int deathPlayerId = int.Parse(playerKillDeathData[1]);
-                PlayerInfo killerPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(killPlayerId);
-                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
+                //Workaround
+                //Replay records player id starting from index 0
+                //we add one here to compensate
+                PlayerInfo killerPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(killPlayerId+1);
+                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId+1);
                 if (killerPlayerInfo == null)
                     throw new InvalidDataException(String.Format("PlayerReplayId (Killer) could not be found in method ParseSingleEventAPI. Input {0}", killPlayerId));
                 if (victimPlayerInfo == null)
