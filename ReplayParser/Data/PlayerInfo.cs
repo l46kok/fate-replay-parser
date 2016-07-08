@@ -15,6 +15,7 @@ namespace ReplayParser.Data
         public int Kills { get; set; }
         public int Deaths { get; set; }
         public int Assists { get; set; }
+        public List<string> ItemPurchaseList { get; set; }
         public string ServantId { get; set; }
         public bool IsObserver { get; set; }
         public PlayerInfo(string playerName, int playerId, int recordId)
@@ -25,6 +26,7 @@ namespace ReplayParser.Data
             Kills = 0;
             Deaths = 0;
             Assists = 0;
+            ItemPurchaseList = new List<string>();
             IsObserver = false;
         }
     }

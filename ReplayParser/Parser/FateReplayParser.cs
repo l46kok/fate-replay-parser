@@ -398,16 +398,16 @@ namespace ReplayParser.Parser
                 string[] playerKillDeathData = eventDetail.Split(new[] { "//" }, StringSplitOptions.None); //Player1(Killer)//Player2
                 int killPlayerId = int.Parse(playerKillDeathData[0]);
                 int deathPlayerId = int.Parse(playerKillDeathData[1]);
-                //Workaround
-                //Replay records player id starting from index 0
-                //we add one here to compensate
-                PlayerInfo killerPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(killPlayerId+1);
-                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId+1);
+                PlayerInfo killerPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(killPlayerId);
+                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
                 if (killerPlayerInfo == null)
                     throw new InvalidDataException(String.Format("PlayerReplayId (Killer) could not be found in method ParseSingleEventAPI. Input {0}", killPlayerId));
                 if (victimPlayerInfo == null)
                     throw new InvalidDataException(String.Format("PlayerReplayId (Victim) could not be found in method ParseSingleEventAPI. Input {0}", deathPlayerId));
-                killerPlayerInfo.Kills++;
+                if (killPlayerId != deathPlayerId)
+                {
+                    killerPlayerInfo.Kills++;
+                }
                 victimPlayerInfo.Deaths++;
             }
             else if (eventCategory.EqualsIgnoreCase("Assist"))
@@ -429,6 +429,24 @@ namespace ReplayParser.Parser
             else if (eventCategory.EqualsIgnoreCase("Forfeit"))
             {
 
+            }
+            else if (eventCategory.EqualsIgnoreCase("ItemBuy"))
+            {
+                string[] itemBuyData = eventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
+                int playerId = int.Parse(itemBuyData[0]);
+                string itemId = itemBuyData[1];
+                PlayerInfo buyingPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
+                if (buyingPlayerInfo == null)
+                    throw new InvalidDataException(String.Format("PlayerReplayId (buyingPlayerInfo) could not be found in method ParseSingleEventAPI Input {0}", playerId));
+                buyingPlayerInfo.ItemPurchaseList.Add(itemId);
+            }
+            else if (eventCategory.EqualsIgnoreCase("Suicide"))
+            {
+                int deathPlayerId = int.Parse(eventDetail);
+                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
+                if (victimPlayerInfo == null)
+                    throw new InvalidDataException(String.Format("PlayerReplayId (Victim) could not be found in method ParseSingleEventAPI (Suicide). Input {0}", deathPlayerId));
+                victimPlayerInfo.Deaths++;
             }
         }
 

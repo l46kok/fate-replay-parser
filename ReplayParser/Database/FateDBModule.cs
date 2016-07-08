@@ -44,7 +44,7 @@ namespace ReplayParser.Database
 
                         AddPlayerStatToDatabase(replayData, fatePlayerList, db, dbServer, fateGame);
                         AddPlayerHeroStatToDatabase(replayData, fatePlayerList, db, dbServer);
-                        db.SaveChanges();
+                        db.SaveChanges(); //Save changes at this point to assign IDs to tables
                         trans.Commit();
                     }
                     catch (Exception ex)
@@ -56,6 +56,16 @@ namespace ReplayParser.Database
                 }
             }
         }
+
+        private static void AddItemPurchaseDetailToDatabase(ReplayData data, frsEntities db,
+            List<GamePlayerDetail> gamePlayerDetailList)
+        {
+            foreach (GamePlayerDetail gpDetail in gamePlayerDetailList)
+            {
+                
+            }
+        }
+
 
         private static void AddPlayerHeroStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers,
                                                         frsEntities db, Server dbServer)

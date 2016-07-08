@@ -98,8 +98,8 @@ namespace ReplayParser
                     
                     FateDBModule dbModule = new FateDBModule();
 
-                        logger.Trace("Inserting replay data into database");
-                        dbModule.InsertReplayData(fateReplayData, _serverName);
+                    logger.Trace("Inserting replay data into database");
+                    dbModule.InsertReplayData(fateReplayData, _serverName);
                     
                     /*                    if (FateGameValidator.IsFateGameValid(fateReplayData))
                                         {
@@ -123,14 +123,10 @@ namespace ReplayParser
                     {
                         file.MoveTo(Path.Combine(errorReplayDirectory.FullName, file.Name));
                     }
-                    
                 }
             }
             logger.Trace("Replay parsing complete");
-            Console.ReadLine();
         }
-
-
 
         static void DisplayHelp()
         {
