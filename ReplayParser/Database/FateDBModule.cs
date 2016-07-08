@@ -20,7 +20,6 @@ namespace ReplayParser.Database
                 {
                     try
                     {
-                        
                         if (!db.Server.Any(x => x.ServerName == serverName && x.IsServiced))
                             throw new Exception(
                                 String.Format("DB Error: Either server name doesn't exist or it is not serviced: {0}",
@@ -45,6 +44,8 @@ namespace ReplayParser.Database
                         AddPlayerStatToDatabase(replayData, fatePlayerList, db, dbServer, fateGame);
                         AddPlayerHeroStatToDatabase(replayData, fatePlayerList, db, dbServer);
                         db.SaveChanges(); //Save changes at this point to assign IDs to tables
+                        AddItemPurchaseDetailToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
+                        db.SaveChanges(); 
                         trans.Commit();
                     }
                     catch (Exception ex)
@@ -57,15 +58,47 @@ namespace ReplayParser.Database
             }
         }
 
-        private static void AddItemPurchaseDetailToDatabase(ReplayData data, frsEntities db,
-            List<GamePlayerDetail> gamePlayerDetailList)
+        private static void AddItemPurchaseDetailToDatabase(ReplayData replayData, frsEntities db,
+            List<GamePlayerDetail> dbPlayerDetailList, List<Player> dbPlayerList)
         {
-            foreach (GamePlayerDetail gpDetail in gamePlayerDetailList)
+            foreach (Player player in dbPlayerList)
             {
-                
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
+                if (playerInfo == null)
+                    throw new InvalidOperationException("Player Name could not be found from replay data (AIPDTD): " + player.PlayerName);
+                var purchasedItemGroup = playerInfo.ItemPurchaseList.GroupBy(x => x)
+                    .Select(group => new
+                    {
+                        ItemTypeID = group.Key,
+                        PurchaseCount = group.Count()
+                    });
+
+                GamePlayerDetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
+
+                int spentGold = 0;
+                int maxGameItemPurchaseId = 0;
+                if (db.GameItemPurchase.Any())
+                {
+                    maxGameItemPurchaseId = db.GameItemPurchase.Max(x => x.GameItemPurchaseID) + 1;
+                }
+                foreach (var item in purchasedItemGroup)
+                { 
+                    ItemInfo itemInfo = db.ItemInfo.First(x => x.ItemTypeID == item.ItemTypeID);
+                    GameItemPurchase itemPurchaseRow = new GameItemPurchase
+                    {
+                        GameItemPurchaseID = maxGameItemPurchaseId,
+                        FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID,
+                        FK_ItemID = itemInfo.ItemID,
+                        ItemPurchaseCount = item.PurchaseCount
+                    };
+                    spentGold += itemInfo.ItemCost*item.PurchaseCount;
+                    db.GameItemPurchase.Add(itemPurchaseRow);
+                    maxGameItemPurchaseId++;
+                }
+
+                gpDetail.GoldSpent = spentGold;
             }
         }
-
 
         private static void AddPlayerHeroStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers,
                                                         frsEntities db, Server dbServer)

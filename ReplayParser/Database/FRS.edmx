@@ -22,6 +22,15 @@
           <Property Name="TeamOneWinCount" Type="int" Nullable="false" />
           <Property Name="TeamTwoWinCount" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="gameitempurchase">
+          <Key>
+            <PropertyRef Name="GameItemPurchaseID" />
+          </Key>
+          <Property Name="GameItemPurchaseID" Type="int" Nullable="false" StoreGeneratedPattern="None" />
+          <Property Name="FK_ItemID" Type="int" Nullable="false" />
+          <Property Name="FK_GamePlayerDetailID" Type="int" Nullable="false" />
+          <Property Name="ItemPurchaseCount" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="gameplayerdetail">
           <Key>
             <PropertyRef Name="GamePlayerDetailID" />
@@ -42,6 +51,7 @@
           <Property Name="Result" Type="enum" Nullable="false" />
           <Property Name="ScoreDiff" Type="int" Nullable="false" />
           <Property Name="ELODiff" Type="int" Nullable="false" />
+          <Property Name="GoldSpent" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="herotype">
           <Key>
@@ -60,6 +70,15 @@
           <Property Name="Language" Type="enum" Nullable="false" />
           <Property Name="HeroName" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="HeroTitle" Type="varchar" MaxLength="45" Nullable="false" />
+        </EntityType>
+        <EntityType Name="iteminfo">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="int" Nullable="false" />
+          <Property Name="ItemTypeID" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="ItemName" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="ItemCost" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="player">
           <Key>
@@ -136,6 +155,21 @@
             </Principal>
             <Dependent Role="game">
               <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'fk_GameItemPurchase_GamePlayerDetailID' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="fk_GameItemPurchase_GamePlayerDetailID" />-->
+        <Association Name="fk_GameItemPurchase_ItemID">
+          <End Role="iteminfo" Type="Self.iteminfo" Multiplicity="1" />
+          <End Role="gameitempurchase" Type="Self.gameitempurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="iteminfo">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="gameitempurchase">
+              <PropertyRef Name="FK_ItemID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -264,9 +298,11 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
         </Association>
         <EntityContainer Name="frsModelStoreContainer">
           <EntitySet Name="game" EntityType="Self.game" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="gameitempurchase" EntityType="Self.gameitempurchase" Schema="frs" store:Type="Tables" />
           <EntitySet Name="gameplayerdetail" EntityType="Self.gameplayerdetail" Schema="frs" store:Type="Tables" />
           <EntitySet Name="herotype" EntityType="Self.herotype" Schema="frs" store:Type="Tables" />
           <EntitySet Name="herotypename" EntityType="Self.herotypename" Schema="frs" store:Type="Tables" />
+          <EntitySet Name="iteminfo" EntityType="Self.iteminfo" Schema="frs" store:Type="Tables" />
           <EntitySet Name="player" EntityType="Self.player" Schema="frs" store:Type="Tables" />
           <EntitySet Name="playerherostat" EntityType="Self.playerherostat" Schema="frs" store:Type="Tables" />
           <EntitySet Name="playerstat" EntityType="Self.playerstat" Schema="frs" store:Type="Tables" />
@@ -275,6 +311,10 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
           <AssociationSet Name="fk_Game_Server" Association="Self.fk_Game_Server">
             <End Role="server" EntitySet="server" />
             <End Role="game" EntitySet="game" />
+          </AssociationSet>
+          <AssociationSet Name="fk_GameItemPurchase_ItemID" Association="Self.fk_GameItemPurchase_ItemID">
+            <End Role="iteminfo" EntitySet="iteminfo" />
+            <End Role="gameitempurchase" EntitySet="gameitempurchase" />
           </AssociationSet>
           <AssociationSet Name="fk_GamePlayerDetail_Game1" Association="Self.fk_GamePlayerDetail_Game1">
             <End Role="game" EntitySet="game" />
@@ -359,6 +399,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
           <NavigationProperty Name="Game" Relationship="Self.fk_GamePlayerDetail_Game1" FromRole="gameplayerdetail" ToRole="game" />
           <NavigationProperty Name="HeroType" Relationship="Self.fk_GamePlayerDetail_HeroType1" FromRole="gameplayerdetail" ToRole="herotype" />
           <NavigationProperty Name="Server" Relationship="Self.fk_GamePlayerDetail_Server1" FromRole="gameplayerdetail" ToRole="server" />
+          <Property Name="GoldSpent" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="HeroType">
           <Key>
@@ -617,6 +658,12 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
             <End Role="Server" EntitySet="Server" />
             <End Role="Game" EntitySet="Game" />
           </AssociationSet>
+          <EntitySet Name="GameItemPurchase" EntityType="frsModel.GameItemPurchase" />
+          <EntitySet Name="ItemInfo" EntityType="frsModel.ItemInfo" />
+          <AssociationSet Name="fk_GameItemPurchase_ItemID" Association="frsModel.fk_GameItemPurchase_ItemID">
+            <End Role="iteminfo" EntitySet="ItemInfo" />
+            <End Role="gameitempurchase" EntitySet="GameItemPurchase" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="fk_Game_Server">
           <End Type="frsModel.Server" Role="Server" Multiplicity="1" />
@@ -627,6 +674,38 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
             </Principal>
             <Dependent Role="Game">
               <PropertyRef Name="FK_ServerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="GameItemPurchase">
+          <Key>
+            <PropertyRef Name="GameItemPurchaseID" />
+          </Key>
+          <Property Name="GameItemPurchaseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="FK_ItemID" Type="Int32" Nullable="false" />
+          <Property Name="FK_GamePlayerDetailID" Type="Int32" Nullable="false" />
+          <Property Name="ItemPurchaseCount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="iteminfo" Relationship="frsModel.fk_GameItemPurchase_ItemID" FromRole="gameitempurchase" ToRole="iteminfo" />
+        </EntityType>
+        <EntityType Name="ItemInfo">
+          <Key>
+            <PropertyRef Name="ItemID" />
+          </Key>
+          <Property Name="ItemID" Type="Int32" Nullable="false" />
+          <Property Name="ItemTypeID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="ItemName" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="ItemCost" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="gameitempurchase" Relationship="frsModel.fk_GameItemPurchase_ItemID" FromRole="iteminfo" ToRole="gameitempurchase" />
+        </EntityType>
+        <Association Name="fk_GameItemPurchase_ItemID">
+          <End Type="frsModel.ItemInfo" Role="iteminfo" Multiplicity="1" />
+          <End Type="frsModel.GameItemPurchase" Role="gameitempurchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="iteminfo">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="gameitempurchase">
+              <PropertyRef Name="FK_ItemID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -657,6 +736,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
           <EntitySetMapping Name="GamePlayerDetail">
             <EntityTypeMapping TypeName="frsModel.GamePlayerDetail">
               <MappingFragment StoreEntitySet="gameplayerdetail">
+                <ScalarProperty Name="GoldSpent" ColumnName="GoldSpent" />
                 <ScalarProperty Name="GamePlayerDetailID" ColumnName="GamePlayerDetailID" />
                 <ScalarProperty Name="FK_GameID" ColumnName="FK_GameID" />
                 <ScalarProperty Name="FK_PlayerID" ColumnName="FK_PlayerID" />
@@ -751,6 +831,26 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
                 <ScalarProperty Name="ServerID" ColumnName="ServerID" />
                 <ScalarProperty Name="ServerName" ColumnName="ServerName" />
                 <ScalarProperty Name="IsServiced" ColumnName="IsServiced" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameItemPurchase">
+            <EntityTypeMapping TypeName="frsModel.GameItemPurchase">
+              <MappingFragment StoreEntitySet="gameitempurchase">
+                <ScalarProperty Name="ItemPurchaseCount" ColumnName="ItemPurchaseCount" />
+                <ScalarProperty Name="FK_GamePlayerDetailID" ColumnName="FK_GamePlayerDetailID" />
+                <ScalarProperty Name="FK_ItemID" ColumnName="FK_ItemID" />
+                <ScalarProperty Name="GameItemPurchaseID" ColumnName="GameItemPurchaseID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemInfo">
+            <EntityTypeMapping TypeName="frsModel.ItemInfo">
+              <MappingFragment StoreEntitySet="iteminfo">
+                <ScalarProperty Name="ItemCost" ColumnName="ItemCost" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ItemTypeID" ColumnName="ItemTypeID" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

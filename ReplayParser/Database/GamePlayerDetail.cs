@@ -26,6 +26,7 @@ namespace FateReplayParser.Database
         public string Result { get; set; }
         public int ScoreDiff { get; set; }
         public int ELODiff { get; set; }
+        public int GoldSpent { get; set; }
     
         public virtual Game Game { get; set; }
         public virtual HeroType HeroType { get; set; }

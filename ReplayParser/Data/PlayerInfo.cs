@@ -15,7 +15,7 @@ namespace ReplayParser.Data
         public int Kills { get; set; }
         public int Deaths { get; set; }
         public int Assists { get; set; }
-        public List<string> ItemPurchaseList { get; set; }
+        public List<string> ItemPurchaseList { get; } // Stores purchased item by their itemId (E.G: I000,I001...)
         public string ServantId { get; set; }
         public bool IsObserver { get; set; }
         public PlayerInfo(string playerName, int playerId, int recordId)
