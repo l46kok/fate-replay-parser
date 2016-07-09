@@ -6,22 +6,31 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Timers;
 using NDesk.Options;
 using NLog;
 using ReplayParser.Data;
 using ReplayParser.Database;
+using ReplayParser.Validators;
 
 namespace ReplayParser
 {
     internal class Program
     {
+        private const int CONSOLE_CLEAR_DISPLAY_LIMIT = 50; //Clears console every nth time parsing has run
         private const string DEFAULT_CONFIG_FILE_PATH = "config.cfg";
         private static string _parsedReplayDirectory = "ParsedReplay";
         private static string _errorReplayDirectory = "ErrorReplay";
         private static string _replayFileDirectory = String.Empty;
         private static string _serverName = String.Empty;
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static int _parsePeriod = 30; // Seconds;
+        private static Timer _parseTimer;
+        private static readonly Stopwatch _stopWatch = new Stopwatch();
+        private static int _consoleClearCounter = 0;
         static void Main(string[] args)
         {
             logger.Trace("Started Replay Parsing module");
@@ -64,6 +73,17 @@ namespace ReplayParser
                 return;
             }
 
+            if (configHandler.ParseTimePeriod < 5)
+            {
+                logger.Trace("Setting minimum default parsing period of 5 seconds.");
+                _parsePeriod = 5;
+            }
+            else
+            {
+                logger.Trace($"Setting parsing period of {configHandler.ParseTimePeriod} seconds from config file.");
+                _parsePeriod = configHandler.ParseTimePeriod;
+            }
+
             if (!String.IsNullOrEmpty(configHandler.ParsedReplayPath))
                 _parsedReplayDirectory = configHandler.ParsedReplayPath;
 
@@ -75,7 +95,21 @@ namespace ReplayParser
                 logger.Trace("Invalid path set for Warcraft 3 replay files. Check your path.");
                 return;
             }
+            _parseTimer = new Timer(_parsePeriod*1000);
+            _parseTimer.Elapsed += (sender, e) => RunParser(sender, e, configHandler);
+            RunParser(null, null, configHandler);
 
+            while (true)
+            {
+                Console.ReadLine();
+            }
+        }
+
+        private static void RunParser(object sender, ElapsedEventArgs e, ConfigHandler configHandler)
+        {
+            _parseTimer.Stop();
+            _stopWatch.Reset();
+            _stopWatch.Start();
             DirectoryInfo replayDirectory = new DirectoryInfo(_replayFileDirectory);
             DirectoryInfo parsedReplayDirectory = new DirectoryInfo(_parsedReplayDirectory);
             DirectoryInfo errorReplayDirectory = new DirectoryInfo(_errorReplayDirectory);
@@ -83,49 +117,75 @@ namespace ReplayParser
                 parsedReplayDirectory = Directory.CreateDirectory(_parsedReplayDirectory);
             if (!errorReplayDirectory.Exists)
                 errorReplayDirectory = Directory.CreateDirectory(_errorReplayDirectory);
-            
-            foreach (var file in replayDirectory.GetFiles())
+            if (!replayDirectory.GetFiles().Any())
             {
-                try
-                {
-                    logger.Trace("-----------------------------------------");
-                    logger.Trace("Started parsing replay file: " + file.Name);
-                    Parser.FateReplayParser fateReplayParser = new Parser.FateReplayParser(file.FullName);
-                    ReplayData fateReplayData = fateReplayParser.ParseReplayData();
-                    fateReplayData.MapVersion = configHandler.MapVersion;
-                    logger.Trace("Finished parsing replay file: " + file.Name);
-                    
-                    
-                    FateDBModule dbModule = new FateDBModule();
-
-                    logger.Trace("Inserting replay data into database");
-                    dbModule.InsertReplayData(fateReplayData, _serverName);
-                    
-                    /*                    if (FateGameValidator.IsFateGameValid(fateReplayData))
-                                        {
-                                            logger.Trace("Inserting replay data into database");
-                                            dbModule.InsertReplayData(fateReplayData, _serverName);
-                                        }*/
-
-                    file.MoveTo(Path.Combine(parsedReplayDirectory.FullName,file.Name));
-
-                }
-                catch (Exception ex)
-                {
-                    logger.Error("Error occurred on parsing the following replay file: " + file.Name + Environment.NewLine);
-                    logger.Trace(ex + Environment.NewLine);
-                    string pathToMoveTo = Path.Combine(errorReplayDirectory.FullName, file.Name);
-                    if (File.Exists(pathToMoveTo))
-                    {
-                        file.Delete();
-                    }
-                    else
-                    {
-                        file.MoveTo(Path.Combine(errorReplayDirectory.FullName, file.Name));
-                    }
-                }
+                logger.Trace($"No replay files found in directory.");
             }
-            logger.Trace("Replay parsing complete");
+            else
+            {
+                foreach (var file in replayDirectory.GetFiles())
+                {
+                    try
+                    {
+                        logger.Trace("-----------------------------------------");
+                        logger.Trace("Started parsing replay file: " + file.Name);
+                        Parser.FateReplayParser fateReplayParser = new Parser.FateReplayParser(file.FullName);
+                        ReplayData fateReplayData = fateReplayParser.ParseReplayData();
+                        fateReplayData.MapVersion = configHandler.MapVersion;
+                        logger.Trace("Finished parsing replay file: " + file.Name);
+
+
+                        FateDBModule dbModule = new FateDBModule();
+
+                        if (FateGameValidator.IsFateGameValid(fateReplayData))
+                        {
+                            logger.Trace("Inserting replay data into database");
+                            dbModule.InsertReplayData(fateReplayData, _serverName);
+                        }
+                        else
+                        {
+                            logger.Trace("Game is not valid. Database insert skipped.");
+                        }
+
+                        string pathToMoveTo = Path.Combine(parsedReplayDirectory.FullName, file.Name);
+                        if (File.Exists(pathToMoveTo))
+                        {
+                            logger.Trace($"Duplicate file name found for {file.Name} at ParsedReplay directory. File deleted.");
+                            file.Delete();
+                        }
+                        else
+                        {
+                            file.MoveTo(Path.Combine(parsedReplayDirectory.FullName, file.Name));
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Error occurred on parsing the following replay file: " + file.Name + Environment.NewLine);
+                        logger.Trace(ex + Environment.NewLine);
+                        string pathToMoveTo = Path.Combine(errorReplayDirectory.FullName, file.Name);
+                        if (File.Exists(pathToMoveTo))
+                        {
+                            logger.Trace($"Duplicate file name found for {file.Name} at ErrorReplay directory. File deleted.");
+                            file.Delete();
+                        }
+                        else
+                        {
+                            file.MoveTo(Path.Combine(errorReplayDirectory.FullName, file.Name));
+                        }
+                    }
+                }
+                logger.Trace($"Replay parsing complete [Elapsed: {_stopWatch.Elapsed.TotalSeconds} seconds]");
+            }
+
+            _consoleClearCounter++;
+            if (_consoleClearCounter >= CONSOLE_CLEAR_DISPLAY_LIMIT)
+            {
+                _consoleClearCounter = 0;
+                Console.Clear();
+            }
+            _stopWatch.Stop();
+            _parseTimer.Start();
         }
 
         static void DisplayHelp()

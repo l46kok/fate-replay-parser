@@ -367,6 +367,10 @@ namespace ReplayParser.Parser
                     throw new InvalidDataException(String.Format("Unexpected GameMode. Input {0}",eventDetail));
                 replayData.GameMode = gameMode;
             }
+            else if (eventCategory.EqualsIgnoreCase("PracticeMode"))
+            {
+                replayData.IsPracticeMode = true;
+            }
             else if (eventCategory.EqualsIgnoreCase("RoundVictory"))
             {
                 if (eventDetail.EqualsIgnoreCase("T1"))

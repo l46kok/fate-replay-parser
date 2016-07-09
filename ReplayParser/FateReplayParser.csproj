@@ -148,6 +148,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="config.cfg" />
     <None Include="DLL\NLog\NLog.mono2.xsd">
       <SubType>Designer</SubType>
     </None>

@@ -61,6 +61,11 @@ namespace ReplayParser.Database
         private static void AddItemPurchaseDetailToDatabase(ReplayData replayData, frsEntities db,
             List<GamePlayerDetail> dbPlayerDetailList, List<Player> dbPlayerList)
         {
+            int maxGameItemPurchaseId = 0;
+            if (db.GameItemPurchase.Any())
+            {
+                maxGameItemPurchaseId = db.GameItemPurchase.Max(x => x.GameItemPurchaseID) + 1;
+            }
             foreach (Player player in dbPlayerList)
             {
                 PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
@@ -76,11 +81,6 @@ namespace ReplayParser.Database
                 GamePlayerDetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
 
                 int spentGold = 0;
-                int maxGameItemPurchaseId = 0;
-                if (db.GameItemPurchase.Any())
-                {
-                    maxGameItemPurchaseId = db.GameItemPurchase.Max(x => x.GameItemPurchaseID) + 1;
-                }
                 foreach (var item in purchasedItemGroup)
                 { 
                     ItemInfo itemInfo = db.ItemInfo.First(x => x.ItemTypeID == item.ItemTypeID);

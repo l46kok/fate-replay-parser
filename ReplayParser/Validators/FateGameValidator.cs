@@ -15,9 +15,11 @@ namespace ReplayParser.Validators
         
         public static bool IsFateGameValid(ReplayData fateReplayData)
         {
-            if (!IsGameDurationValid(fateReplayData))
-                return false;
+            //if (!IsGameDurationValid(fateReplayData))
+            //    return false;
 
+            if (fateReplayData.IsPracticeMode)
+                return false;
             return true;
         }
         //1. Length must be 20 minutes or more

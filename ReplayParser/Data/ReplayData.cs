@@ -10,8 +10,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReplayParser.Data
 {
@@ -46,6 +44,7 @@ namespace ReplayParser.Data
         }
 
         public GameMode GameMode { get; set; }
+        public bool IsPracticeMode { get; set; }
         public ReplayHeader ReplayHeader { get; set; }
         public List<DataBlock> DataBlockList { get; private set; }
         public List<PlayerInfo> PlayerInfoList { get; private set; }
@@ -67,6 +66,7 @@ namespace ReplayParser.Data
             TeamOneVictoryCount = 0;
             TeamTwoVictoryCount = 0;
             DrawCount = 0;
+            IsPracticeMode = false;
         }
 
         public void AddPlayerInfo(PlayerInfo player)

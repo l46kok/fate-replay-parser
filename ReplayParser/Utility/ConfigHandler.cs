@@ -14,6 +14,7 @@ namespace ReplayParser
         public string ErrorReplayPath { get; private set; }
         public string ServerName { get; private set; }
         public string MapVersion { get; private set; }
+        public int ParseTimePeriod { get; private set; }
 
         private string _configFilePath;
         private readonly List<string> _fileContent = new List<string>();
@@ -38,6 +39,11 @@ namespace ReplayParser
             ErrorReplayPath = GetConfigString("errorreplaypath");
             ServerName = GetConfigString("server");
             MapVersion = GetConfigString("mapversion");
+            int parsedInt;
+            if (int.TryParse(GetConfigString("parsetimeperiod"), out parsedInt))
+            {
+                ParseTimePeriod = parsedInt;
+            }
         }
 
         private string GetConfigString(string key)
