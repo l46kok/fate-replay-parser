@@ -293,7 +293,7 @@ namespace ReplayParser.Database
                 if (playerInfo.IsObserver)
                     continue;
 
-                Player player = dbPlayers.FirstOrDefault(x => x.PlayerName == playerInfo.PlayerName);
+                Player player = dbPlayers.FirstOrDefault(x => x.PlayerName.EqualsIgnoreCase(playerInfo.PlayerName));
                 if (player != null)
                 {
                     playerList.Add(player);
