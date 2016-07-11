@@ -385,17 +385,25 @@ namespace ReplayParser.Parser
             else if (eventCategory.EqualsIgnoreCase("ServantSelection"))
             {
                 string[] servantSelectionData = eventDetail.Split(new[] {"//"},StringSplitOptions.None); //PlayerReplayId//HeroId
-                if (servantSelectionData.Count() != 3)
-                    throw new InvalidDataException(String.Format("Expected 3 inputs for ServantSelection event in method ParseSingleEventAPI. Input {0}",eventDetail));
+                if (servantSelectionData.Count() != 4)
+                    throw new InvalidDataException(String.Format("Expected 4 inputs for ServantSelection event in method ParseSingleEventAPI. Input {0}",eventDetail));
                 string playerName = servantSelectionData[0];
                 int playerGameId = int.Parse(servantSelectionData[1]);
                 string servantId = servantSelectionData[2];
+                int teamNumber = int.Parse(servantSelectionData[3]);
+                if (teamNumber > 2 || teamNumber < 1)
+                    throw new InvalidDataException($"Incorrect TeamNumber found in ParseSingleEventAPI. Input {teamNumber}");
 
                 PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(playerName);
                 if (playerInfo == null)
                     throw new InvalidDataException(String.Format("PlayerName could not be found in method ParseSingleEventAPI. Input {0}", playerName));
                 playerInfo.ServantId = servantId;
                 playerInfo.PlayerGameId = playerGameId;
+                
+                //Mix teams switch teams around
+                //We reassign team number here in case if it's been changed
+                //Also not zero-index based, so we subtract one
+                playerInfo.Team = teamNumber - 1;
             }
             else if (eventCategory.EqualsIgnoreCase("Kill"))
             {
@@ -472,10 +480,13 @@ namespace ReplayParser.Parser
             uint chatMode = ByteUtility.ReadDoubleWord(gameData, currIndex);
             currIndex += 4;
             string chatMessage = String.Empty;
-            if (chatMode == 0x00)
-                chatMessage += "[A]";
-            else if (chatMode == 0x01)
-                chatMessage += "[T" + (playerInfo.Team + 1) + "]";
+
+            //Mix Teams messes up team orientation
+            //For now, not appending all or allied chat until better solution is found
+            //if (chatMode == 0x00)
+            //    chatMessage += "[A]";
+            //else if (chatMode == 0x01)
+            //    chatMessage += "[T" + (playerInfo.Team + 1) + "]";
 
             chatMessage += "[" + playerInfo.PlayerName + "]";
             List<byte> encodedChatMessage = new List<byte>();
