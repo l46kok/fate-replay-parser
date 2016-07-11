@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ReplayParser.Utility;
 
 namespace ReplayParser.Data
 {
@@ -96,7 +97,7 @@ namespace ReplayParser.Data
 
         public PlayerInfo GetPlayerInfoByPlayerName(string playerName)
         {
-            return PlayerInfoList.SingleOrDefault(player => playerName == player.PlayerName);
+            return PlayerInfoList.SingleOrDefault(player => playerName.EqualsIgnoreCase(player.PlayerName));
         }
     }
 }
