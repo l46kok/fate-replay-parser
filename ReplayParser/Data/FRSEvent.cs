@@ -33,12 +33,14 @@ namespace ReplayParser.Data
 {
     public class FRSEvent
     {
+        public string EventId { get; set; }
         public string GameCacheName { get; set; }
         public string EventCategory { get; set; }
         public string EventDetail { get; set; }
 
-        public FRSEvent(string gameCacheName, string eventCategory, string eventDetail)
+        public FRSEvent(string eventId, string gameCacheName, string eventCategory, string eventDetail)
         {
+            EventId = eventId;
             GameCacheName = gameCacheName;
             EventCategory = eventCategory;
             EventDetail = eventDetail;
@@ -48,14 +50,12 @@ namespace ReplayParser.Data
         {
             if (!(obj is FRSEvent)) return obj.Equals(this); // defer to other object
             FRSEvent other = (FRSEvent)obj;
-            return GameCacheName == other.GameCacheName && EventCategory == other.EventCategory && EventDetail == other.EventDetail; // check field equality
+            return EventId == other.EventId; // check field equality
         }
         public override int GetHashCode()
         {
             int hc = 13;
-            hc += GameCacheName.GetHashCode() * 27;
-            hc += EventCategory.GetHashCode() * 27;
-            hc += EventDetail.GetHashCode() * 27;
+            hc += EventId.GetHashCode() * 27;
 
             return hc;
         }

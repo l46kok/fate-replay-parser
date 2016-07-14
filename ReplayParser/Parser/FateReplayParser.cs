@@ -22,7 +22,7 @@ namespace ReplayParser.Parser
 
         //Unfiltered list of event calls from Fate map.
         //SyncStoredInteger calls are repeated n times of player count.
-        private readonly List<FRSEvent> _frsEventCallList = new List<FRSEvent>(); 
+        private readonly HashSet<FRSEvent> _frsEventCallList = new HashSet<FRSEvent>(); 
 
         private readonly string _replayFilePath;
         private readonly FateReplayHeaderParser _fateReplayHeaderParser;
@@ -311,8 +311,10 @@ namespace ReplayParser.Parser
                     case 0x70: //SyncStoredInteger. The most important part.
                         string gameCacheName = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex);
                         string eventCategory = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex);
-                        string eventDetail = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex);
-                        _frsEventCallList.Add(new FRSEvent(gameCacheName,eventCategory,eventDetail));
+                        string[] eventDetailId = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex).Split(new[] { "//" }, StringSplitOptions.None);
+                        string eventId = eventDetailId[0];
+                        string eventDetail = string.Join("//",eventDetailId.Skip(1).Take(4));
+                        _frsEventCallList.Add(new FRSEvent(eventId, gameCacheName,eventCategory,eventDetail));
 
 
                         break;
@@ -323,20 +325,8 @@ namespace ReplayParser.Parser
             }
         }
 
-        private void ParseEventAPI(List<FRSEvent> frsEventCallList, ReplayData replayData)
+        private void ParseEventAPI(HashSet<FRSEvent> frsEventCallList, ReplayData replayData)
         {
-            var frsDistinctGroup = frsEventCallList.Distinct(new FRSEventComparer());
-            var frsEventGroup = frsDistinctGroup as IList<FRSEvent> ?? frsDistinctGroup.ToList();
-            foreach (var frsEvent in frsEventGroup)
-            {
-                int eventCount = frsEventCallList.Count(x => Equals(x, frsEvent));
-                int removeCount = (int) (eventCount - (eventCount/replayData.PlayerCount));
-                for (int i = 0; i < removeCount; i++)
-                {
-                    frsEventCallList.Remove(frsEvent);
-                }
-            }
-
             foreach (FRSEvent frsEvent in frsEventCallList)
             {
                 ParseSingleEventAPI(frsEvent,replayData);

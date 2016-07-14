@@ -140,7 +140,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ArrayExtensions.cs" />
     <Compile Include="Utility\ByteUtility.cs" />
-    <Compile Include="Utility\Comparer.cs" />
     <Compile Include="Utility\StringExtensions.cs" />
     <Compile Include="Validators\FateGameValidator.cs" />
   </ItemGroup>
