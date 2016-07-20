@@ -432,6 +432,14 @@ namespace ReplayParser.Parser
             {
 
             }
+            else if (eventCategory.EqualsIgnoreCase("GodsHelp"))
+            {
+
+            }
+            else if (eventCategory.EqualsIgnoreCase("CommandSeal"))
+            {
+
+            }
             else if (eventCategory.EqualsIgnoreCase("ItemBuy"))
             {
                 string[] itemBuyData = eventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId

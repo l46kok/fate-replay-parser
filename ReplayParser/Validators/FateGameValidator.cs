@@ -17,9 +17,17 @@ namespace ReplayParser.Validators
         {
             //if (!IsGameDurationValid(fateReplayData))
             //    return false;
+            if (fateReplayData.GameMode != GameMode.DM)
+            {
+                logger.Trace("Skipping stats insert: Non DeathMatch game.");
+                return false;
+            }
 
             if (fateReplayData.IsPracticeMode)
+            {
+                logger.Trace("Skipping stats insert: Practice mode.");
                 return false;
+            }
             return true;
         }
         //1. Length must be 20 minutes or more
