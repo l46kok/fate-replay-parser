@@ -135,12 +135,10 @@ namespace FateReplayParser
                         fateReplayData.MapVersion = configHandler.MapVersion;
                         logger.Trace("Finished parsing replay file: " + file.Name);
 
-
-                        FateDBModule dbModule = new FateDBModule();
-
                         if (FateGameValidator.IsFateGameValid(fateReplayData))
                         {
                             logger.Trace("Inserting replay data into database");
+                            FateDBModule dbModule = new FateDBModule();
                             dbModule.InsertReplayData(fateReplayData, _serverName);
                         }
                         else
@@ -158,7 +156,6 @@ namespace FateReplayParser
                         {
                             file.MoveTo(Path.Combine(parsedReplayDirectory.FullName, file.Name));
                         }
-
                     }
                     catch (Exception ex)
                     {

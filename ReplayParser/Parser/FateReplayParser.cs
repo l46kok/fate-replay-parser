@@ -27,11 +27,6 @@ namespace FateReplayParser.Parser
         private readonly string _replayFilePath;
         private readonly FateReplayHeaderParser _fateReplayHeaderParser;
         
-        public FateReplayHeaderParser FateReplayHeaderParser
-        {
-            get { return _fateReplayHeaderParser; }
-        }
-
         public FateReplayParser(string replayFilePath)
         {
             _replayFilePath = replayFilePath;
@@ -307,6 +302,21 @@ namespace FateReplayParser.Parser
                         break;
                     case 0x75: //Unknown
                         currIndex++;
+                        break;
+                    case 0x20: //Cheats
+                    case 0x22:
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2F:
+                    case 0x30:
+                    case 0x31:
+                    case 0x32:
                         break;
                     case 0x70: //SyncStoredInteger. The most important part.
                         string gameCacheName = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex);
