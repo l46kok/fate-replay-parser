@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using ReplayParser.Utility;
 
-namespace ReplayParser
+namespace FateReplayParser.Utility
 {
     public class ConfigHandler
     {

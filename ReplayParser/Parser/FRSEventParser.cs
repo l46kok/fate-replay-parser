@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using ReplayParser.Data;
-using ReplayParser.Utility;
+using FateReplayParser.Data;
+using FateReplayParser.Utility;
 
 namespace FateReplayParser.Parser
 {
@@ -72,17 +72,17 @@ namespace FateReplayParser.Parser
         {
             string[] servantSelectionData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerName//PlayerReplayId//HeroId//TeamNumber
             if (servantSelectionData.Length != 4)
-                throw new InvalidDataException($"Expected 4 inputs for ServantSelection event in method ParseSingleEventAPI. Input {frsEvent.EventDetail}");
+                throw new InvalidDataException($"Expected 4 inputs for ServantSelection event in method ParseServantSelection. Input {frsEvent.EventDetail}");
             string playerName = servantSelectionData[0];
             int playerGameId = int.Parse(servantSelectionData[1]);
             string servantId = servantSelectionData[2];
             int teamNumber = int.Parse(servantSelectionData[3]);
             if (teamNumber > 2 || teamNumber < 1)
-                throw new InvalidDataException($"Incorrect TeamNumber found in ParseSingleEventAPI. Input {teamNumber}");
+                throw new InvalidDataException($"Incorrect TeamNumber found in ParseServantSelection. Input {teamNumber}");
 
             PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(playerName);
             if (playerInfo == null)
-                throw new InvalidDataException($"PlayerName could not be found in method ParseSingleEventAPI. Input {playerName}");
+                throw new InvalidDataException($"PlayerName could not be found in method ParseServantSelection. Input {playerName}");
             playerInfo.ServantId = servantId;
             playerInfo.PlayerGameId = playerGameId;
 
@@ -101,10 +101,10 @@ namespace FateReplayParser.Parser
             PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
             if (killerPlayerInfo == null)
                 throw new InvalidDataException(
-                    $"PlayerReplayId (Killer) could not be found in method ParseSingleEventAPI. Input {killPlayerId}");
+                    $"PlayerReplayId (Killer) could not be found in method ParseKill. Input {killPlayerId}");
             if (victimPlayerInfo == null)
                 throw new InvalidDataException(
-                    $"PlayerReplayId (Victim) could not be found in method ParseSingleEventAPI. Input {deathPlayerId}");
+                    $"PlayerReplayId (Victim) could not be found in method ParseKill. Input {deathPlayerId}");
             if (killPlayerId != deathPlayerId)
             {
                 killerPlayerInfo.Kills++;
@@ -118,7 +118,7 @@ namespace FateReplayParser.Parser
             PlayerInfo assistPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(assistPlayerId);
             if (assistPlayerInfo == null)
                 throw new InvalidDataException(
-                    $"PlayerReplayId (Assist) could not be found in method ParseSingleEventAPI. Input {assistPlayerId}");
+                    $"PlayerReplayId (Assist) could not be found in method ParseAssist. Input {assistPlayerId}");
             assistPlayerInfo.Assists++;
         }
 
@@ -128,18 +128,32 @@ namespace FateReplayParser.Parser
             PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
             if (victimPlayerInfo == null)
                 throw new InvalidDataException(
-                    $"PlayerReplayId (Victim) could not be found in method ParseSingleEventAPI (Suicide). Input {deathPlayerId}");
+                    $"PlayerReplayId (Victim) could not be found in method ParseSuicide (Suicide). Input {deathPlayerId}");
             victimPlayerInfo.Deaths++;
         }
 
         private static void ParseAttribute(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            string[] attributeData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//StatSpellID
+            int playerId = int.Parse(attributeData[0]);
+            string attributeAbilId = attributeData[1];
+            PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
+            if (playerInfo == null)
+                throw new InvalidDataException(
+                    $"PlayerReplayId (playerInfo) could not be found in method ParseAttribute Input {playerId}");
+            playerInfo.AttributeList.Add(attributeAbilId);
         }
 
         private static void ParseStat(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            string[] statData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//StatSpellID
+            int playerId = int.Parse(statData[0]);
+            string statSpellId = statData[1];
+            PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
+            if (playerInfo == null)
+                throw new InvalidDataException(
+                    $"PlayerReplayId (playerInfo) could not be found in method ParseStat Input {playerId}");
+            playerInfo.StatList.Add(statSpellId);
         }
 
         private static void ParseForfeit(FRSEvent frsEvent, ReplayData replayData)
@@ -149,12 +163,26 @@ namespace FateReplayParser.Parser
 
         private static void ParseGodsHelp(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            string[] godsHelpData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//GodsHelpID
+            int playerId = int.Parse(godsHelpData[0]);
+            string godsHelpSpellId = godsHelpData[1];
+            PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
+            if (playerInfo == null)
+                throw new InvalidDataException(
+                    $"PlayerReplayId (playerInfo) could not be found in method ParseGodsHelp Input {playerId}");
+            playerInfo.GodsHelpList.Add(godsHelpSpellId);
         }
 
         private static void ParseCommandSeal(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            string[] commandSealData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//SealSpellID
+            int playerId = int.Parse(commandSealData[0]);
+            string sealSpellId = commandSealData[1];
+            PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
+            if (playerInfo == null)
+                throw new InvalidDataException(
+                    $"PlayerReplayId (playerInfo) could not be found in method ParseCommandSeal Input {playerId}");
+            playerInfo.CommandSealList.Add(sealSpellId);
         }
 
         private static void ParseItemBuy(FRSEvent frsEvent, ReplayData replayData)
@@ -165,19 +193,30 @@ namespace FateReplayParser.Parser
             PlayerInfo buyingPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
             if (buyingPlayerInfo == null)
                 throw new InvalidDataException(
-                    $"PlayerReplayId (buyingPlayerInfo) could not be found in method ParseSingleEventAPI Input {playerId}");
+                    $"PlayerReplayId (buyingPlayerInfo) could not be found in method ParseItemBuy Input {playerId}");
             buyingPlayerInfo.ItemPurchaseList.Add(itemId);
         }
 
         private static void ParseDamage(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            string[] damageData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
+            int sourcePlayerId = int.Parse(damageData[0]);
+            int targetPlayerId = int.Parse(damageData[1]);
+            double damageDealt = double.Parse(damageData[2]);
+            PlayerInfo sourcePlayerInfo = replayData.GetPlayerInfoByPlayerGameId(sourcePlayerId);
+            PlayerInfo targetPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(targetPlayerId);
+            sourcePlayerInfo.DamageDealt += damageDealt;
+            targetPlayerInfo.DamageTaken += damageDealt;
         }
 
 
         private static void ParseLevelUp(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            string[] levelUpData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
+            int playerId = int.Parse(levelUpData[0]);
+            int newLevel = int.Parse(levelUpData[1]);
+            PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
+            playerInfo.ServantLevel = newLevel;
         }
     }
 }

@@ -10,13 +10,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Timers;
+using FateReplayParser.Data;
+using FateReplayParser.Database;
+using FateReplayParser.Utility;
+using FateReplayParser.Validators;
 using NDesk.Options;
 using NLog;
-using ReplayParser.Data;
-using ReplayParser.Database;
-using ReplayParser.Validators;
 
-namespace ReplayParser
+namespace FateReplayParser
 {
     internal class Program
     {

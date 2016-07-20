@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FateReplayParser.Data;
 using NLog;
-using ReplayParser.Data;
 
-namespace ReplayParser.Validators
+namespace FateReplayParser.Validators
 {
     //Determine if the game meets certain criterias to be inserted into DB
     public static class FateGameValidator

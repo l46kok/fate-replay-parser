@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ReplayParser.Utility
+namespace FateReplayParser.Utility
 {
     public static class ArrayExtensions
     {

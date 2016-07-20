@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using FateReplayParser.Database;
+using FateReplayParser.Data;
+using FateReplayParser.Utility;
 using NLog;
-using ReplayParser.Data;
-using ReplayParser.Utility;
 
-namespace ReplayParser.Database
+namespace FateReplayParser.Database
 {
     public class FateDBModule
     {

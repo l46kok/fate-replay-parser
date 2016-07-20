@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-/*
+﻿/*
  * Copyright 2013 11 01 Unlimited Fate Works 
  * Author: l46kok
  * 
@@ -29,7 +24,7 @@ using System.Text;
     "Forfeit"---"{T1}"---"{T2}"
  */
 
-namespace ReplayParser.Data
+namespace FateReplayParser.Data
 {
     public class FRSEvent
     {

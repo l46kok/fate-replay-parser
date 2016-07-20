@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReplayParser.Utility;
-
-/*
+﻿/*
  * Copyright 2013 09 01 Unlimited Fate Works 
  * Author: l46kok
  * 
@@ -17,7 +9,7 @@ using ReplayParser.Utility;
  */
 
 
-namespace ReplayParser.Data
+namespace FateReplayParser.Data
 {
     public class ReplayHeader
     {

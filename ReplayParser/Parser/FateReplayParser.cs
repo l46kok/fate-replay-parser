@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using FateReplayParser.Data;
+using FateReplayParser.Utility;
 using NLog;
-using ReplayParser.Data;
-using ReplayParser.Utility;
 
 namespace FateReplayParser.Parser
 {

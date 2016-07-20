@@ -10,9 +10,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReplayParser.Utility;
+using FateReplayParser.Utility;
 
-namespace ReplayParser.Data
+namespace FateReplayParser.Data
 {
     public enum GameMode
     {

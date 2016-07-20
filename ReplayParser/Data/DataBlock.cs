@@ -7,12 +7,7 @@
  * http://w3g.deepnode.de/files/w3g_format.txt
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ReplayParser.Data
+namespace FateReplayParser.Data
 {
     public class DataBlock
     {

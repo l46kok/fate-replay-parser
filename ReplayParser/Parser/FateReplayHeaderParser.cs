@@ -2,8 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using ReplayParser.Data;
-using ReplayParser.Utility;
+using FateReplayParser.Data;
+using FateReplayParser.Utility;
 
 namespace FateReplayParser.Parser
 {
