@@ -85,6 +85,7 @@ namespace FateReplayParser.Parser
                 throw new InvalidDataException($"PlayerName could not be found in method ParseServantSelection. Input {playerName}");
             playerInfo.ServantId = servantId;
             playerInfo.PlayerGameId = playerGameId;
+            replayData.AddPlayerInfoByGameId(playerGameId, playerInfo);
 
             //Mix teams switch teams around
             //We reassign team number here in case if it's been changed

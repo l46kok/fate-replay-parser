@@ -36,6 +36,9 @@ namespace FateReplayParser.Data
     }
     public class ReplayData
     {
+        private readonly Dictionary<int, PlayerInfo> _playerInfoDicByGameId = new Dictionary<int, PlayerInfo>();
+        private readonly Dictionary<int, PlayerInfo> _playerInfoDicByReplayId = new Dictionary<int, PlayerInfo>();
+        private readonly Dictionary<string, PlayerInfo> _playerInfoDicByName = new Dictionary<string, PlayerInfo>();
         private byte[] _replayFileBytes;
         private readonly List<string> _gameChatMessage = new List<string>();
 
@@ -45,7 +48,7 @@ namespace FateReplayParser.Data
         public bool IsPracticeMode { get; set; }
         public ReplayHeader ReplayHeader { get; set; }
         public List<DataBlock> DataBlockList { get; private set; }
-        public List<PlayerInfo> PlayerInfoList { get; private set; }
+        public List<PlayerInfo> PlayerInfoList => _playerInfoDicByName.Values.ToList();
         public string GameName { get; set; }
         public uint PlayerCount { get; set; }
         public int TeamOneVictoryCount { get; set; }
@@ -59,7 +62,6 @@ namespace FateReplayParser.Data
         {
             _replayFileBytes = replayFileBytes;
             DataBlockList = new List<DataBlock>();
-            PlayerInfoList = new List<PlayerInfo>();
             PlayerCount = 0;
             TeamOneVictoryCount = 0;
             TeamTwoVictoryCount = 0;
@@ -69,7 +71,13 @@ namespace FateReplayParser.Data
 
         public void AddPlayerInfo(PlayerInfo player)
         {
-            PlayerInfoList.Add(player);
+            _playerInfoDicByName.Add(player.PlayerName, player);
+            _playerInfoDicByReplayId.Add(player.PlayerReplayId,player);
+        }
+
+        public void AddPlayerInfoByGameId(int gameId, PlayerInfo player)
+        {
+            _playerInfoDicByGameId.Add(player.PlayerGameId, player);
         }
 
         public void AddDataBlock(DataBlock dataBlock)
@@ -84,17 +92,17 @@ namespace FateReplayParser.Data
 
         public PlayerInfo GetPlayerInfoByPlayerReplayId(int playerReplayId)
         {
-            return PlayerInfoList.SingleOrDefault(player => player.PlayerReplayId == playerReplayId);
+            return _playerInfoDicByReplayId[playerReplayId];
         }
 
         public PlayerInfo GetPlayerInfoByPlayerGameId(int playerGameId)
         {
-            return PlayerInfoList.SingleOrDefault(player => player.PlayerGameId == playerGameId);
+            return _playerInfoDicByGameId[playerGameId];
         }
 
         public PlayerInfo GetPlayerInfoByPlayerName(string playerName)
         {
-            return PlayerInfoList.SingleOrDefault(player => playerName.EqualsIgnoreCase(player.PlayerName));
+            return _playerInfoDicByName[playerName];
         }
     }
 }

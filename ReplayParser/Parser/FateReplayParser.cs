@@ -342,8 +342,7 @@ namespace FateReplayParser.Parser
         {
             int playerId = gameData[currIndex];
             currIndex++;
-            PlayerInfo playerInfo =
-                replayData.PlayerInfoList.FirstOrDefault(player => player.PlayerReplayId == playerId);
+            PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerReplayId(playerId);
             if (playerInfo == null)
                 throw new InvalidDataException(
                     String.Format("Player Id Not found in method ParseGameReplayDataFromBlock. Input : {0}", playerId));
