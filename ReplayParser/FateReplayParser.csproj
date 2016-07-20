@@ -126,6 +126,7 @@
     <Compile Include="Database\Server.cs">
       <DependentUpon>FRS.tt</DependentUpon>
     </Compile>
+    <Compile Include="Parser\FRSEventParser.cs" />
     <Compile Include="Utility\ConfigHandler.cs" />
     <Compile Include="Database\FateDBModule.cs" />
     <Compile Include="Data\DataBlock.cs" />

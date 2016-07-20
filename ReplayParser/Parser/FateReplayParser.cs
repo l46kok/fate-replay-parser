@@ -8,7 +8,7 @@ using NLog;
 using ReplayParser.Data;
 using ReplayParser.Utility;
 
-namespace ReplayParser.Parser
+namespace FateReplayParser.Parser
 {
     public class FateReplayParser
     {
@@ -92,7 +92,7 @@ namespace ReplayParser.Parser
             ParseGameReplayDataFromBlock(dataBlockBytes.ToArray(), replayData, currIndex);
 
             //Parse injected event data
-            ParseEventAPI(_frsEventCallList, replayData);
+            FRSEventParser.ParseEventAPI(_frsEventCallList, replayData);
 
             //Determine observers from game
             SetObservers(replayData.PlayerInfoList);
@@ -325,14 +325,6 @@ namespace ReplayParser.Parser
             }
         }
 
-        private void ParseEventAPI(HashSet<FRSEvent> frsEventCallList, ReplayData replayData)
-        {
-            foreach (FRSEvent frsEvent in frsEventCallList)
-            {
-                ParseSingleEventAPI(frsEvent,replayData);
-            }
-        }
-
         private void SetObservers(List<PlayerInfo> playerInfoList)
         {
             foreach (PlayerInfo player in playerInfoList)
@@ -343,120 +335,6 @@ namespace ReplayParser.Parser
                         throw new InvalidDataException(String.Format("SetObservers error. No servant selected but has kills/deaths/assists: {0}",player.PlayerName));
                     player.IsObserver = true;
                 }
-            }
-        }
-
-        private void ParseSingleEventAPI(FRSEvent frsEvent, ReplayData replayData)
-        {
-            string eventCategory = frsEvent.EventCategory;
-            string eventDetail = frsEvent.EventDetail;
-            if (eventCategory.EqualsIgnoreCase("GameMode"))
-            {
-                GameMode gameMode;
-                if (!Enum.TryParse(eventDetail,true,out gameMode))
-                    throw new InvalidDataException(String.Format("Unexpected GameMode. Input {0}",eventDetail));
-                replayData.GameMode = gameMode;
-            }
-            else if (eventCategory.EqualsIgnoreCase("PracticeMode"))
-            {
-                replayData.IsPracticeMode = true;
-            }
-            else if (eventCategory.EqualsIgnoreCase("RoundVictory"))
-            {
-                if (eventDetail.EqualsIgnoreCase("T1"))
-                    replayData.TeamOneVictoryCount++;
-                else if (eventDetail.EqualsIgnoreCase("T2"))
-                    replayData.TeamTwoVictoryCount++;
-                else if (eventDetail.EqualsIgnoreCase("Draw"))
-                    replayData.DrawCount++;
-                else
-                    throw new InvalidDataException(String.Format("Unexpected RoundVictory data. Input {0}", eventDetail));
-            }
-            else if (eventCategory.EqualsIgnoreCase("ServantSelection"))
-            {
-                string[] servantSelectionData = eventDetail.Split(new[] {"//"},StringSplitOptions.None); //PlayerReplayId//HeroId
-                if (servantSelectionData.Count() != 4)
-                    throw new InvalidDataException(String.Format("Expected 4 inputs for ServantSelection event in method ParseSingleEventAPI. Input {0}",eventDetail));
-                string playerName = servantSelectionData[0];
-                int playerGameId = int.Parse(servantSelectionData[1]);
-                string servantId = servantSelectionData[2];
-                int teamNumber = int.Parse(servantSelectionData[3]);
-                if (teamNumber > 2 || teamNumber < 1)
-                    throw new InvalidDataException($"Incorrect TeamNumber found in ParseSingleEventAPI. Input {teamNumber}");
-
-                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(playerName);
-                if (playerInfo == null)
-                    throw new InvalidDataException(String.Format("PlayerName could not be found in method ParseSingleEventAPI. Input {0}", playerName));
-                playerInfo.ServantId = servantId;
-                playerInfo.PlayerGameId = playerGameId;
-                
-                //Mix teams switch teams around
-                //We reassign team number here in case if it's been changed
-                //Also not zero-index based, so we subtract one
-                playerInfo.Team = teamNumber - 1;
-            }
-            else if (eventCategory.EqualsIgnoreCase("Kill"))
-            {
-                string[] playerKillDeathData = eventDetail.Split(new[] { "//" }, StringSplitOptions.None); //Player1(Killer)//Player2
-                int killPlayerId = int.Parse(playerKillDeathData[0]);
-                int deathPlayerId = int.Parse(playerKillDeathData[1]);
-                PlayerInfo killerPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(killPlayerId);
-                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
-                if (killerPlayerInfo == null)
-                    throw new InvalidDataException(String.Format("PlayerReplayId (Killer) could not be found in method ParseSingleEventAPI. Input {0}", killPlayerId));
-                if (victimPlayerInfo == null)
-                    throw new InvalidDataException(String.Format("PlayerReplayId (Victim) could not be found in method ParseSingleEventAPI. Input {0}", deathPlayerId));
-                if (killPlayerId != deathPlayerId)
-                {
-                    killerPlayerInfo.Kills++;
-                }
-                victimPlayerInfo.Deaths++;
-            }
-            else if (eventCategory.EqualsIgnoreCase("Assist"))
-            {
-                int assistPlayerId = int.Parse(eventDetail);
-                PlayerInfo assistPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(assistPlayerId);
-                if (assistPlayerInfo == null)
-                    throw new InvalidDataException(String.Format("PlayerReplayId (Assist) could not be found in method ParseSingleEventAPI. Input {0}", assistPlayerId));
-                assistPlayerInfo.Assists++;
-            }
-            else if (eventCategory.EqualsIgnoreCase("Attribute"))
-            {
-
-            }
-            else if (eventCategory.EqualsIgnoreCase("Stat"))
-            {
-
-            }
-            else if (eventCategory.EqualsIgnoreCase("Forfeit"))
-            {
-
-            }
-            else if (eventCategory.EqualsIgnoreCase("GodsHelp"))
-            {
-
-            }
-            else if (eventCategory.EqualsIgnoreCase("CommandSeal"))
-            {
-
-            }
-            else if (eventCategory.EqualsIgnoreCase("ItemBuy"))
-            {
-                string[] itemBuyData = eventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
-                int playerId = int.Parse(itemBuyData[0]);
-                string itemId = itemBuyData[1];
-                PlayerInfo buyingPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
-                if (buyingPlayerInfo == null)
-                    throw new InvalidDataException(String.Format("PlayerReplayId (buyingPlayerInfo) could not be found in method ParseSingleEventAPI Input {0}", playerId));
-                buyingPlayerInfo.ItemPurchaseList.Add(itemId);
-            }
-            else if (eventCategory.EqualsIgnoreCase("Suicide"))
-            {
-                int deathPlayerId = int.Parse(eventDetail);
-                PlayerInfo victimPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(deathPlayerId);
-                if (victimPlayerInfo == null)
-                    throw new InvalidDataException(String.Format("PlayerReplayId (Victim) could not be found in method ParseSingleEventAPI (Suicide). Input {0}", deathPlayerId));
-                victimPlayerInfo.Deaths++;
             }
         }
 

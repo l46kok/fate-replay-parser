@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using ReplayParser.Data;
 using ReplayParser.Utility;
-using System.Linq;
 
-namespace ReplayParser.Parser
+namespace FateReplayParser.Parser
 {
     public class FateReplayHeaderParser
     {

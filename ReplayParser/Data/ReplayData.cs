@@ -39,10 +39,7 @@ namespace ReplayParser.Data
         private byte[] _replayFileBytes;
         private readonly List<string> _gameChatMessage = new List<string>();
 
-        public List<string> GameChatMessage
-        {
-            get { return _gameChatMessage; }
-        }
+        public List<string> GameChatMessage => _gameChatMessage;
 
         public GameMode GameMode { get; set; }
         public bool IsPracticeMode { get; set; }

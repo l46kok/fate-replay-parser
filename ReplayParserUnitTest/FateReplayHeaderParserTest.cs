@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FateReplayParser.Parser;
 using NUnit.Framework;
 using ReplayParser.Data;
-using ReplayParser.Parser;
 using ReplayParser.Samples;
 
 namespace ReplayParserUnitTest
