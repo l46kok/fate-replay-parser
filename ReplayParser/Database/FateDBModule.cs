@@ -105,8 +105,7 @@ namespace FateReplayParser.Database
             foreach (Player player in dbPlayers)
             {
 
-                PlayerInfo playerInfo =
-                    replayData.PlayerInfoList.FirstOrDefault(x => x.PlayerName.EqualsIgnoreCase(player.PlayerName));
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
                 if (playerInfo == null)
                     throw new Exception(String.Format("Player Name not found during PlayerHeroStat module. Input: {0}",
                                                       player.PlayerName));
@@ -159,8 +158,7 @@ namespace FateReplayParser.Database
                 }
                 playerStat.PlayCount++;
 
-                PlayerInfo playerInfo =
-                    replayData.PlayerInfoList.FirstOrDefault(x => x.PlayerName.EqualsIgnoreCase(player.PlayerName));
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
                 if (playerInfo == null)
                     throw new Exception(String.Format("Player Name not found during PlayerStatList module. Input: {0}",
                                                       player.PlayerName));
@@ -208,8 +206,7 @@ namespace FateReplayParser.Database
             List<GamePlayerDetail> fateGamePlayerDetailList = new List<GamePlayerDetail>();
             foreach (Player player in dbPlayers)
             {
-                PlayerInfo playerInfo =
-                   replayData.PlayerInfoList.FirstOrDefault(x => x.PlayerName.EqualsIgnoreCase(player.PlayerName));
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
                 if (playerInfo == null)
                     throw new Exception(String.Format("Player Name not found during GamePlayerDetailList module. Input: {0}",
                                                       player.PlayerName));

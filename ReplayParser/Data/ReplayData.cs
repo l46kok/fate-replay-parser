@@ -38,7 +38,7 @@ namespace FateReplayParser.Data
     {
         private readonly Dictionary<int, PlayerInfo> _playerInfoDicByGameId = new Dictionary<int, PlayerInfo>();
         private readonly Dictionary<int, PlayerInfo> _playerInfoDicByReplayId = new Dictionary<int, PlayerInfo>();
-        private readonly Dictionary<string, PlayerInfo> _playerInfoDicByName = new Dictionary<string, PlayerInfo>();
+        private readonly Dictionary<string, PlayerInfo> _playerInfoDicByName = new Dictionary<string, PlayerInfo>(StringComparer.OrdinalIgnoreCase);
         private byte[] _replayFileBytes;
         private readonly List<string> _gameChatMessage = new List<string>();
 
