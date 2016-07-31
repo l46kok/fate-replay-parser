@@ -130,7 +130,7 @@ namespace FateReplayParser
                     {
                         logger.Trace("-----------------------------------------");
                         logger.Trace("Started parsing replay file: " + file.Name);
-                        FateReplayParser.Parser.FateReplayParser fateReplayParser = new FateReplayParser.Parser.FateReplayParser(file.FullName);
+                        Parser.FateReplayParser fateReplayParser = new Parser.FateReplayParser(file.FullName);
                         ReplayData fateReplayData = fateReplayParser.ParseReplayData();
                         fateReplayData.MapVersion = configHandler.MapVersion;
                         logger.Trace("Finished parsing replay file: " + file.Name);

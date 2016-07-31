@@ -289,7 +289,7 @@ namespace FateReplayParser.Database
                 if (playerInfo.IsObserver)
                     continue;
 
-                Player player = dbPlayers.FirstOrDefault(x => x.PlayerName.EqualsIgnoreCase(playerInfo.PlayerName));
+                Player player = dbPlayers.FirstOrDefault(x => x.PlayerName == playerInfo.PlayerName);
                 if (player != null)
                 {
                     playerList.Add(player);
