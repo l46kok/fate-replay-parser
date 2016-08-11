@@ -146,6 +146,7 @@ namespace FateReplayParser
                             logger.Trace("Game is not valid. Database insert skipped.");
                         }
 
+#if RELEASE
                         string pathToMoveTo = Path.Combine(parsedReplayDirectory.FullName, file.Name);
                         if (File.Exists(pathToMoveTo))
                         {
@@ -156,11 +157,13 @@ namespace FateReplayParser
                         {
                             file.MoveTo(Path.Combine(parsedReplayDirectory.FullName, file.Name));
                         }
+#endif
                     }
                     catch (Exception ex)
                     {
                         logger.Error("Error occurred on parsing the following replay file: " + file.Name + Environment.NewLine);
                         logger.Trace(ex + Environment.NewLine);
+#if RELEASE
                         string pathToMoveTo = Path.Combine(errorReplayDirectory.FullName, file.Name);
                         if (File.Exists(pathToMoveTo))
                         {
@@ -171,6 +174,7 @@ namespace FateReplayParser
                         {
                             file.MoveTo(Path.Combine(errorReplayDirectory.FullName, file.Name));
                         }
+#endif
                     }
                 }
                 logger.Trace($"Replay parsing complete [Elapsed: {_stopWatch.Elapsed.TotalSeconds} seconds]");

@@ -13,32 +13,32 @@ namespace FateReplayParser.Database
         private static Logger logger = LogManager.GetCurrentClassLogger();
         public void InsertReplayData(ReplayData replayData, string serverName)
         {
-            using (var db = new frsEntities())
+            using (var db = new frsDb())
             {
                 using (var trans = db.Database.BeginTransaction())
                 {
                     try
                     {
-                        if (!db.Server.Any(x => x.ServerName == serverName && x.IsServiced))
+                        if (!db.server.Any(x => x.ServerName == serverName && x.IsServiced))
                             throw new Exception(
                                 String.Format("DB Error: Either server name doesn't exist or it is not serviced: {0}",
                                               serverName));
 
-                        Server dbServer = db.Server.FirstOrDefault(x => x.ServerName == serverName);
+                        server dbServer = db.server.FirstOrDefault(x => x.ServerName == serverName);
                         //Player collection based on server
-                        var dbPlayers = db.Set<Player>().Where(x => x.FK_ServerID == dbServer.ServerID);
+                        var dbPlayers = db.Set<player>().Where(x => x.FK_ServerID == dbServer.ServerID);
 
-                        List<Player> fatePlayerList = AddPlayerList(replayData, dbPlayers, dbServer, db);
+                        List<player> fatePlayerList = AddPlayerList(replayData, dbPlayers, dbServer, db);
 
                         db.SaveChanges();
 
-                        Game fateGame = GetNewGame(replayData, dbServer, db);
-                        db.Game.Add(fateGame);
+                        game fateGame = GetNewGame(replayData, dbServer, db);
+                        db.game.Add(fateGame);
 
-                        List<GamePlayerDetail> fateGamePlayerDetailList = GetGamePlayerDetailList(replayData,
+                        List<gameplayerdetail> fateGamePlayerDetailList = GetGamePlayerDetailList(replayData,
                                                                                                   fatePlayerList,
                                                                                                   fateGame, dbServer, db);
-                        db.GamePlayerDetail.AddRange(fateGamePlayerDetailList);
+                        db.gameplayerdetail.AddRange(fateGamePlayerDetailList);
 
                         AddPlayerStatToDatabase(replayData, fatePlayerList, db, dbServer, fateGame);
                         AddPlayerHeroStatToDatabase(replayData, fatePlayerList, db, dbServer);
@@ -57,15 +57,15 @@ namespace FateReplayParser.Database
             }
         }
 
-        private static void AddItemPurchaseDetailToDatabase(ReplayData replayData, frsEntities db,
-            List<GamePlayerDetail> dbPlayerDetailList, List<Player> dbPlayerList)
+        private static void AddItemPurchaseDetailToDatabase(ReplayData replayData, frsDb db,
+            List<gameplayerdetail> dbPlayerDetailList, List<player> dbPlayerList)
         {
             int maxGameItemPurchaseId = 0;
-            if (db.GameItemPurchase.Any())
+            if (db.gameitempurchase.Any())
             {
-                maxGameItemPurchaseId = db.GameItemPurchase.Max(x => x.GameItemPurchaseID) + 1;
+                maxGameItemPurchaseId = db.gameitempurchase.Max(x => x.GameItemPurchaseID) + 1;
             }
-            foreach (Player player in dbPlayerList)
+            foreach (player player in dbPlayerList)
             {
                 PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
                 if (playerInfo == null)
@@ -77,13 +77,13 @@ namespace FateReplayParser.Database
                         PurchaseCount = group.Count()
                     });
 
-                GamePlayerDetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
+                gameplayerdetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
 
                 int spentGold = 0;
                 foreach (var item in purchasedItemGroup)
                 { 
-                    ItemInfo itemInfo = db.ItemInfo.First(x => x.ItemTypeID == item.ItemTypeID);
-                    GameItemPurchase itemPurchaseRow = new GameItemPurchase
+                    iteminfo itemInfo = db.iteminfo.First(x => x.ItemTypeID == item.ItemTypeID);
+                    gameitempurchase itemPurchaseRow = new gameitempurchase
                     {
                         GameItemPurchaseID = maxGameItemPurchaseId,
                         FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID,
@@ -91,7 +91,7 @@ namespace FateReplayParser.Database
                         ItemPurchaseCount = item.PurchaseCount
                     };
                     spentGold += itemInfo.ItemCost*item.PurchaseCount;
-                    db.GameItemPurchase.Add(itemPurchaseRow);
+                    db.gameitempurchase.Add(itemPurchaseRow);
                     maxGameItemPurchaseId++;
                 }
 
@@ -99,10 +99,10 @@ namespace FateReplayParser.Database
             }
         }
 
-        private static void AddPlayerHeroStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers,
-                                                        frsEntities db, Server dbServer)
+        private static void AddPlayerHeroStatToDatabase(ReplayData replayData, IEnumerable<player> dbPlayers,
+                                                        frsDb db, server dbServer)
         {
-            foreach (Player player in dbPlayers)
+            foreach (player player in dbPlayers)
             {
 
                 PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
@@ -110,21 +110,21 @@ namespace FateReplayParser.Database
                     throw new Exception(String.Format("Player Name not found during PlayerHeroStat module. Input: {0}",
                                                       player.PlayerName));
 
-                HeroType playerHeroType = db.HeroType.FirstOrDefault(x => x.HeroUnitTypeID == playerInfo.ServantId);
+                herotype playerHeroType = db.herotype.FirstOrDefault(x => x.HeroUnitTypeID == playerInfo.ServantId);
 
-                PlayerHeroStat playerHeroStat =
-                    db.PlayerHeroStat.FirstOrDefault(
+                playerherostat playerHeroStat =
+                    db.playerherostat.FirstOrDefault(
                         x =>
                         x.FK_ServerID == dbServer.ServerID && x.FK_PlayerID == player.PlayerID &&
                         x.FK_HeroTypeID == playerHeroType.HeroTypeID);
                 bool isNewHeroStat = false;
                 if (playerHeroStat == null)
                 {
-                    playerHeroStat = new PlayerHeroStat();
+                    playerHeroStat = new playerherostat();
                     playerHeroStat.FK_PlayerID = player.PlayerID;
                     playerHeroStat.FK_ServerID = dbServer.ServerID;
                     playerHeroStat.FK_HeroTypeID = playerHeroType.HeroTypeID;
-                    db.PlayerHeroStat.Add(playerHeroStat);
+                    db.playerherostat.Add(playerHeroStat);
                     isNewHeroStat = true;
                 }
                 playerHeroStat.HeroPlayCount++;
@@ -133,27 +133,27 @@ namespace FateReplayParser.Database
                 playerHeroStat.TotalHeroAssists += playerInfo.Assists;
 
                 //Upsert
-                db.PlayerHeroStat.Attach(playerHeroStat);
+                db.playerherostat.Attach(playerHeroStat);
                 var playerHeroStatEntry = db.Entry(playerHeroStat);
                 playerHeroStatEntry.State = isNewHeroStat ? EntityState.Added : EntityState.Modified;
             }
         }
 
-        private void AddPlayerStatToDatabase(ReplayData replayData, IEnumerable<Player> dbPlayers, frsEntities db,
-                                             Server dbServer, Game fateGame)
+        private void AddPlayerStatToDatabase(ReplayData replayData, IEnumerable<player> dbPlayers, frsDb db,
+                                             server dbServer, game fateGame)
         {
-            foreach (Player player in dbPlayers)
+            foreach (player player in dbPlayers)
             {
                 bool isNewPlayerStat = false;
-                PlayerStat playerStat =
-                    db.PlayerStat.FirstOrDefault(
+                playerstat playerStat =
+                    db.playerstat.FirstOrDefault(
                         x => x.FK_ServerID == dbServer.ServerID && x.FK_PlayerID == player.PlayerID);
                 if (playerStat == null)
                 {
-                    playerStat = new PlayerStat();
+                    playerStat = new playerstat();
                     playerStat.FK_PlayerID = player.PlayerID;
                     playerStat.FK_ServerID = dbServer.ServerID;
-                    db.PlayerStat.Add(playerStat);
+                    db.playerstat.Add(playerStat);
                     isNewPlayerStat = true;
                 }
                 playerStat.PlayCount++;
@@ -193,29 +193,29 @@ namespace FateReplayParser.Database
                 }
 
                 //Upsert
-                db.PlayerStat.Attach(playerStat);
+                db.playerstat.Attach(playerStat);
                 var playerStatEntry = db.Entry(playerStat);
                 playerStatEntry.State = isNewPlayerStat ? EntityState.Added : EntityState.Modified;
                 
             }
         }
 
-        private List<GamePlayerDetail> GetGamePlayerDetailList(ReplayData replayData, IEnumerable<Player> dbPlayers, Game fateGame, Server dbServer,
-                                                  frsEntities db)
+        private List<gameplayerdetail> GetGamePlayerDetailList(ReplayData replayData, IEnumerable<player> dbPlayers, game fateGame, server dbServer,
+                                                  frsDb db)
         {
-            List<GamePlayerDetail> fateGamePlayerDetailList = new List<GamePlayerDetail>();
-            foreach (Player player in dbPlayers)
+            List<gameplayerdetail> fateGamePlayerDetailList = new List<gameplayerdetail>();
+            foreach (player player in dbPlayers)
             {
                 PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
                 if (playerInfo == null)
                     throw new Exception(String.Format("Player Name not found during GamePlayerDetailList module. Input: {0}",
                                                       player.PlayerName));
 
-                GamePlayerDetail fateGamePlayerDetail = new GamePlayerDetail();
+                gameplayerdetail fateGamePlayerDetail = new gameplayerdetail();
                 fateGamePlayerDetail.FK_GameID = fateGame.GameID;
                 fateGamePlayerDetail.FK_PlayerID = player.PlayerID;
                 fateGamePlayerDetail.FK_ServerID = dbServer.ServerID;
-                HeroType playerHeroType = db.HeroType.FirstOrDefault(x => x.HeroUnitTypeID == playerInfo.ServantId);
+                herotype playerHeroType = db.herotype.FirstOrDefault(x => x.HeroUnitTypeID == playerInfo.ServantId);
                 if (playerHeroType == null)
                     throw new Exception(String.Format("DB Error: Unknown hero type id: {0}", playerInfo.ServantId));
                 fateGamePlayerDetail.FK_HeroTypeID = playerHeroType.HeroTypeID;
@@ -247,14 +247,14 @@ namespace FateReplayParser.Database
             return fateGamePlayerDetailList;
         }
 
-        private Game GetNewGame(ReplayData replayData, Server dbServer, frsEntities db)
+        private game GetNewGame(ReplayData replayData, server dbServer, frsDb db)
         {
             int gameId = 0;
-            if (db.Game.Any())
-                gameId = db.Game.Max(g => g.GameID) + 1; //Generate Max GameID + 1
+            if (db.game.Any())
+                gameId = db.game.Max(g => g.GameID) + 1; //Generate Max GameID + 1
 
-            Game fateGame = new Game
-                {
+            game fateGame = new game
+            {
                     GameID = gameId, 
                     GameName = replayData.GameName,
                     Log = String.Join("\n",replayData.GameChatMessage.ToArray()),
@@ -277,10 +277,10 @@ namespace FateReplayParser.Database
             return fateGame;
         }
 
-        private List<Player> AddPlayerList(ReplayData replayData, IQueryable<Player> dbPlayers, Server dbServer,
-                                             frsEntities db)
+        private List<player> AddPlayerList(ReplayData replayData, IQueryable<player> dbPlayers, server dbServer,
+                                             frsDb db)
         {
-            List<Player> playerList = new List<Player>();
+            List<player> playerList = new List<player>();
             int playerId = 0;
             
             foreach (PlayerInfo playerInfo in replayData.PlayerInfoList)
@@ -289,18 +289,18 @@ namespace FateReplayParser.Database
                 if (playerInfo.IsObserver)
                     continue;
 
-                Player player = dbPlayers.FirstOrDefault(x => x.PlayerName == playerInfo.PlayerName);
+                player player = dbPlayers.FirstOrDefault(x => x.PlayerName == playerInfo.PlayerName);
                 if (player != null)
                 {
                     playerList.Add(player);
                     continue;
                 }
 
-                if (db.Player.Any())
-                    playerId = db.Player.Max(g => g.PlayerID) + 1; //Generate Max GameID + 1
+                if (db.player.Any())
+                    playerId = db.player.Max(g => g.PlayerID) + 1; //Generate Max GameID + 1
 
-                player = new Player
-                    {
+                player = new player
+                {
                         FK_ServerID = dbServer.ServerID,
                         IsBanned = false,
                         LastUpdatedBy = "FateRankingSystem",
@@ -311,7 +311,7 @@ namespace FateReplayParser.Database
                     };
                 playerId++;
                 playerList.Add(player);
-                db.Player.Add(player);
+                db.player.Add(player);
             }
             return playerList;
         }

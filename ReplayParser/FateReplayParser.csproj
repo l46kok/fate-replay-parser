@@ -78,53 +78,71 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database\FRS.Context.cs">
+    <Compile Include="Database\attributeinfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\attributelearn.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\frsDb.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FRS.Context.tt</DependentUpon>
+      <DependentUpon>frsDb.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\FRS.cs">
+    <Compile Include="Database\frsDb.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FRS.tt</DependentUpon>
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\FRS.Designer.cs">
+    <Compile Include="Database\frsDb.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>FRS.edmx</DependentUpon>
+      <DependentUpon>frsDb.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Database\Game.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\game.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\GameItemPurchase.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\gameitempurchase.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\GamePlayerDetail.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\gameplayerdetail.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\HeroType.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\godshelpinfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\HeroTypeName.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\godshelpuse.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\ItemInfo.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\herostatinfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Player.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\herostatlearn.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\PlayerHeroStat.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\herotype.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\PlayerStat.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\herotypename.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Ranking.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\iteminfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\Server.cs">
-      <DependentUpon>FRS.tt</DependentUpon>
+    <Compile Include="Database\player.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\playerherostat.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\playerstat.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ranking.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\server.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
     <Compile Include="Parser\FRSEventParser.cs" />
     <Compile Include="Utility\ConfigHandler.cs" />
@@ -149,15 +167,15 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="config.cfg" />
+    <EntityDeploy Include="Database\frsDb.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>frsDb.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Database\frsDb.edmx.diagram">
+      <DependentUpon>frsDb.edmx</DependentUpon>
+    </None>
     <None Include="DLL\NLog\NLog.mono2.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <EntityDeploy Include="Database\FRS.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>FRS.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <None Include="Database\FRS.edmx.diagram">
-      <DependentUpon>FRS.edmx</DependentUpon>
     </None>
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -168,6 +186,16 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Database\frsDb.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>frsDb.edmx</DependentUpon>
+      <LastGenOutput>frsDb.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Database\frsDb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>frsDb.edmx</DependentUpon>
+      <LastGenOutput>frsDb.cs</LastGenOutput>
+    </Content>
     <Content Include="DLL\NDesk.Options\NDesk.Options.dll" />
     <Content Include="DLL\NLog\NLog.dll" />
     <Content Include="DLL\NLog\NLog.dll.mdb">
@@ -180,16 +208,6 @@
     <Content Include="DLL\NLog\NLog.Extended.xml" />
     <Content Include="DLL\NLog\NLog.xml" />
     <Content Include="DLL\ZLib\Ionic.Zlib.dll" />
-    <Content Include="Database\FRS.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>FRS.edmx</DependentUpon>
-      <LastGenOutput>FRS.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Database\FRS.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>FRS.edmx</DependentUpon>
-      <LastGenOutput>FRS.cs</LastGenOutput>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
