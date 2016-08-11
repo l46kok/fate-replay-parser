@@ -8,23 +8,24 @@ namespace FateReplayParser.Parser
 {
     public static class FRSEventParser
     {
+        private const string EVENT_MSG_DELIMITER = "/";
         private static readonly Dictionary<string, Action<FRSEvent, ReplayData>> _eventHandlerDic = new Dictionary
             <string, Action<FRSEvent, ReplayData>>
         {
             {"GameMode", ParseGameMode},
             {"PracticeMode", ParsePracticeMode},
             {"RoundVictory", ParseRoundVictory},
-            {"ServantSelection", ParseServantSelection},
-            {"Kill", ParseKill},
-            {"Assist", ParseAssist},
+            {"SS", ParseServantSelection},
+            {"K", ParseKill},
+            {"A", ParseAssist},
             {"Suicide", ParseSuicide},
-            {"Damage", ParseDamage},
-            {"Attribute", ParseAttribute},
-            {"LevelUp", ParseLevelUp},
-            {"Stat", ParseStat},
-            {"CommandSeal", ParseCommandSeal},
-            {"GodsHelp", ParseGodsHelp},
-            {"ItemBuy", ParseItemBuy},
+            {"D", ParseDamage},
+            {"AT", ParseAttribute},
+            {"L", ParseLevelUp},
+            {"S", ParseStat},
+            {"CS", ParseCommandSeal},
+            {"GH", ParseGodsHelp},
+            {"IB", ParseItemBuy},
             {"Forfeit", ParseForfeit},
         };
 
@@ -70,7 +71,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseServantSelection(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] servantSelectionData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerName//PlayerReplayId//HeroId//TeamNumber
+            string[] servantSelectionData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerName//PlayerReplayId//HeroId//TeamNumber
             if (servantSelectionData.Length != 4)
                 throw new InvalidDataException($"Expected 4 inputs for ServantSelection event in method ParseServantSelection. Input {frsEvent.EventDetail}");
             string playerName = servantSelectionData[0];
@@ -95,7 +96,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseKill(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] playerKillDeathData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //Player1(Killer)//Player2
+            string[] playerKillDeathData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //Player1(Killer)//Player2
             int killPlayerId = int.Parse(playerKillDeathData[0]);
             int deathPlayerId = int.Parse(playerKillDeathData[1]);
             PlayerInfo killerPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(killPlayerId);
@@ -135,7 +136,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseAttribute(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] attributeData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//StatSpellID
+            string[] attributeData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//StatSpellID
             int playerId = int.Parse(attributeData[0]);
             string attributeAbilId = attributeData[1];
             PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
@@ -147,7 +148,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseStat(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] statData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//StatSpellID
+            string[] statData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//StatSpellID
             int playerId = int.Parse(statData[0]);
             string statSpellId = statData[1];
             PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
@@ -164,7 +165,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseGodsHelp(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] godsHelpData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//GodsHelpID
+            string[] godsHelpData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//GodsHelpID
             int playerId = int.Parse(godsHelpData[0]);
             string godsHelpSpellId = godsHelpData[1];
             PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
@@ -176,7 +177,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseCommandSeal(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] commandSealData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//SealSpellID
+            string[] commandSealData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//SealSpellID
             int playerId = int.Parse(commandSealData[0]);
             string sealSpellId = commandSealData[1];
             PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
@@ -188,7 +189,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseItemBuy(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] itemBuyData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
+            string[] itemBuyData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//ItemId
             int playerId = int.Parse(itemBuyData[0]);
             string itemId = itemBuyData[1];
             PlayerInfo buyingPlayerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);
@@ -200,7 +201,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseDamage(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] damageData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
+            string[] damageData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//ItemId
             int sourcePlayerId = int.Parse(damageData[0]);
             int targetPlayerId = int.Parse(damageData[1]);
             double damageDealt = double.Parse(damageData[2]);
@@ -213,7 +214,7 @@ namespace FateReplayParser.Parser
 
         private static void ParseLevelUp(FRSEvent frsEvent, ReplayData replayData)
         {
-            string[] levelUpData = frsEvent.EventDetail.Split(new[] { "//" }, StringSplitOptions.None); //PlayerID//ItemId
+            string[] levelUpData = frsEvent.EventDetail.Split(new[] { EVENT_MSG_DELIMITER }, StringSplitOptions.None); //PlayerID//ItemId
             int playerId = int.Parse(levelUpData[0]);
             int newLevel = int.Parse(levelUpData[1]);
             PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerGameId(playerId);

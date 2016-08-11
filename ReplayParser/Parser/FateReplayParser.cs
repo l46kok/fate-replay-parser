@@ -321,9 +321,9 @@ namespace FateReplayParser.Parser
                     case 0x70: //SyncStoredInteger. The most important part.
                         string gameCacheName = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex);
                         string eventCategory = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex);
-                        string[] eventDetailId = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex).Split(new[] { "//" }, StringSplitOptions.None);
+                        string[] eventDetailId = ByteUtility.GetNullTerminatedString(gameData, currIndex, out currIndex).Split(new[] { "/" }, StringSplitOptions.None);
                         string eventId = eventDetailId[0];
-                        string eventDetail = string.Join("//",eventDetailId.Skip(1).Take(4));
+                        string eventDetail = string.Join("/",eventDetailId.Skip(1).Take(4));
                         _frsEventCallList.Add(new FRSEvent(eventId, gameCacheName,eventCategory,eventDetail));
 
 
