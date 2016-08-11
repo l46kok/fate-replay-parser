@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using FateReplayParser.Data;
 using NLog;
 
@@ -11,8 +13,8 @@ namespace FateReplayParser.Validators
         
         public static bool IsFateGameValid(ReplayData fateReplayData)
         {
-            //if (!IsGameDurationValid(fateReplayData))
-            //    return false;
+            if (!IsGameDurationValid(fateReplayData))
+                return false;
             if (fateReplayData.GameMode != GameMode.DM)
             {
                 logger.Trace("Skipping stats insert: Non DeathMatch game.");
@@ -24,13 +26,26 @@ namespace FateReplayParser.Validators
                 logger.Trace("Skipping stats insert: Practice mode.");
                 return false;
             }
+
+            if (fateReplayData.PlayerCount < 6)
+            {
+                logger.Trace($"Skipping stats insert: Not Enough players: (Players: {fateReplayData.PlayerCount})");
+                return false;
+            }
+
+            if (fateReplayData.PlayerInfoList.Count(x => x.Team == 1) !=
+                fateReplayData.PlayerInfoList.Count(x => x.Team == 2))
+            {
+                logger.Trace($"Skipping stats insert: Uneven Teams");
+                return false;
+            }
             return true;
         }
-        //1. Length must be 20 minutes or more
+        //Length must be 20 minutes or more
         private static bool IsGameDurationValid(ReplayData fateReplayData)
         {
             TimeSpan gameDuration = new TimeSpan(0, 0, 0, 0, (int)fateReplayData.ReplayHeader.ReplayLength);
-            if (gameDuration.Minutes < 20)
+            if (gameDuration.TotalMinutes < 20)
             {
                 logger.Trace("Game duration is too short. Must be 20 minutes or more");
                 return false;
