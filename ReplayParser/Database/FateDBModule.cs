@@ -10,7 +10,7 @@ namespace FateReplayParser.Database
 {
     public class FateDBModule
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public void InsertReplayData(ReplayData replayData, string serverName)
         {
             using (var db = new frsDb())
@@ -44,6 +44,9 @@ namespace FateReplayParser.Database
                         AddPlayerHeroStatToDatabase(replayData, fatePlayerList, db, dbServer);
                         db.SaveChanges(); //Save changes at this point to assign IDs to tables
                         AddItemPurchaseDetailToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
+                        AddHeroStatLearnDetailToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
+                        AddGodsHelpUseToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
+                        AddAttributeLearnToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
                         db.SaveChanges(); 
                         trans.Commit();
                     }
@@ -99,6 +102,101 @@ namespace FateReplayParser.Database
             }
         }
 
+        private static void AddHeroStatLearnDetailToDatabase(ReplayData replayData, frsDb db,
+            List<gameplayerdetail> dbPlayerDetailList, List<player> dbPlayerList)
+        {
+            foreach (player player in dbPlayerList)
+            {
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
+                if (playerInfo == null)
+                    throw new InvalidOperationException("Player Name could not be found from replay data (AddHeroStatLearnDetailToDatabase): " + player.PlayerName);
+                var statList = playerInfo.StatList.GroupBy(x => x)
+                    .Select(group => new
+                    {
+                        StatAbilID = group.Key,
+                        StatLearnCount = group.Count()
+                    });
+
+                gameplayerdetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
+
+                foreach (var stat in statList)
+                {
+                    herostatinfo statInfo = db.herostatinfo.First(x => x.HeroStatAbilID == stat.StatAbilID);
+                    herostatlearn statLearned = new herostatlearn()
+                    {
+                        FK_HeroStatInfoID = statInfo.HeroStatInfoID,
+                        FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID,
+                        LearnCount = stat.StatLearnCount
+                    };
+                    db.herostatlearn.Add(statLearned);
+                }
+            }
+        }
+
+        private static void AddGodsHelpUseToDatabase(ReplayData replayData, frsDb db,
+            List<gameplayerdetail> dbPlayerDetailList, List<player> dbPlayerList)
+        {
+            foreach (player player in dbPlayerList)
+            {
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
+                if (playerInfo == null)
+                    throw new InvalidOperationException("Player Name could not be found from replay data (AddGodsHelpUseToDatabase): " + player.PlayerName);
+
+                gameplayerdetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
+
+                foreach (var godsHelpAbilId in playerInfo.GodsHelpList)
+                {
+                    godshelpinfo godsHelpInfo = db.godshelpinfo.First(x => x.GodsHelpAbilID == godsHelpAbilId);
+                    godshelpuse godsHelpUsed = new godshelpuse()
+                    {
+                        FK_GodsHelpInfoID = godsHelpInfo.GodsHelpInfoID,
+                        FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID
+                    };
+                    db.godshelpuse.Add(godsHelpUsed);
+                }
+            }
+        }
+
+        private static void AddAttributeLearnToDatabase(ReplayData replayData, frsDb db,
+            List<gameplayerdetail> dbPlayerDetailList, List<player> dbPlayerList)
+        {
+            foreach (player player in dbPlayerList)
+            {
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
+                if (playerInfo == null)
+                    throw new InvalidOperationException("Player Name could not be found from replay data (AddAttributeLearnToDatabase): " + player.PlayerName);
+
+                gameplayerdetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
+
+                foreach (var attributeAbilId in playerInfo.AttributeList)
+                {
+                    attributeinfo attributeInfo = db.attributeinfo.FirstOrDefault(x => x.AttributeAbilID == attributeAbilId);
+                    if (attributeInfo == null)
+                    {
+                        int maxId = 0;
+                        if (db.attributeinfo.Any())
+                        {
+                            maxId = db.attributeinfo.Max(x => x.AttributeInfoID);
+                        }
+                        attributeInfo = new attributeinfo
+                        {
+                            AttributeInfoID = maxId,
+                            AttributeAbilID = attributeAbilId,
+                            AttributeName = ""
+                        };
+                        db.attributeinfo.Add(attributeInfo);
+                    }
+                    attributelearn attributeLearned = new attributelearn()
+                    {
+                        FK_AttributeInfoID = attributeInfo.AttributeInfoID,
+                        FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID
+                    };
+                    db.attributelearn.Add(attributeLearned);
+                }
+            }
+        }
+
+
         private static void AddPlayerHeroStatToDatabase(ReplayData replayData, IEnumerable<player> dbPlayers,
                                                         frsDb db, server dbServer)
         {
@@ -110,7 +208,7 @@ namespace FateReplayParser.Database
                     throw new Exception(String.Format("Player Name not found during PlayerHeroStat module. Input: {0}",
                                                       player.PlayerName));
 
-                herotype playerHeroType = db.herotype.FirstOrDefault(x => x.HeroUnitTypeID == playerInfo.ServantId);
+                herotype playerHeroType = db.herotype.First(x => x.HeroUnitTypeID == playerInfo.ServantId);
 
                 playerherostat playerHeroStat =
                     db.playerherostat.FirstOrDefault(
@@ -120,10 +218,12 @@ namespace FateReplayParser.Database
                 bool isNewHeroStat = false;
                 if (playerHeroStat == null)
                 {
-                    playerHeroStat = new playerherostat();
-                    playerHeroStat.FK_PlayerID = player.PlayerID;
-                    playerHeroStat.FK_ServerID = dbServer.ServerID;
-                    playerHeroStat.FK_HeroTypeID = playerHeroType.HeroTypeID;
+                    playerHeroStat = new playerherostat
+                    {
+                        FK_PlayerID = player.PlayerID,
+                        FK_ServerID = dbServer.ServerID,
+                        FK_HeroTypeID = playerHeroType.HeroTypeID
+                    };
                     db.playerherostat.Add(playerHeroStat);
                     isNewHeroStat = true;
                 }
@@ -223,6 +323,9 @@ namespace FateReplayParser.Database
                 fateGamePlayerDetail.Deaths = playerInfo.Deaths;
                 fateGamePlayerDetail.Assists = playerInfo.Assists;
                 fateGamePlayerDetail.Team = (playerInfo.Team + 1).ToString();
+                fateGamePlayerDetail.DamageTaken = playerInfo.DamageTaken;
+                fateGamePlayerDetail.DamageDealt = playerInfo.DamageDealt;
+                fateGamePlayerDetail.HeroLevel = playerInfo.ServantLevel;
                 if (fateGame.Result == GameResult.NONE.ToString())
                     fateGamePlayerDetail.Result = GamePlayerResult.NONE.ToString();
                 else if (fateGame.Result == GameResult.T1W.ToString())

@@ -17,7 +17,7 @@
           <Key>
             <PropertyRef Name="AttributeLearnID" />
           </Key>
-          <Property Name="AttributeLearnID" Type="int" Nullable="false" />
+          <Property Name="AttributeLearnID" Type="int" Nullable="false" StoreGeneratedPattern="Identity"/>
           <Property Name="FK_AttributeInfoID" Type="int" Nullable="false" />
           <Property Name="FK_GamePlayerDetailID" Type="int" Nullable="false" />
         </EntityType>
@@ -100,7 +100,7 @@
           <Key>
             <PropertyRef Name="HeroStatLearnID" />
           </Key>
-          <Property Name="HeroStatLearnID" Type="int" Nullable="false" />
+          <Property Name="HeroStatLearnID" Type="int" Nullable="false" StoreGeneratedPattern="Identity"/>
           <Property Name="FK_HeroStatInfoID" Type="int" Nullable="false" />
           <Property Name="FK_GamePlayerDetailID" Type="int" Nullable="false" />
           <Property Name="LearnCount" Type="int" Nullable="false" />
