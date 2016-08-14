@@ -25,6 +25,7 @@ namespace FateReplayParser
         private const string DEFAULT_CONFIG_FILE_PATH = "config.cfg";
         private static string _parsedReplayDirectory = "ParsedReplay";
         private static string _errorReplayDirectory = "ErrorReplay";
+        private static string _invalidReplayDirectory = "InvalidReplay";
         private static string _replayFileDirectory = String.Empty;
         private static string _serverName = String.Empty;
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -113,6 +114,7 @@ namespace FateReplayParser
             _stopWatch.Start();
             DirectoryInfo replayDirectory = new DirectoryInfo(_replayFileDirectory);
             DirectoryInfo parsedReplayDirectory = new DirectoryInfo(_parsedReplayDirectory);
+            DirectoryInfo invalidReplayDirectory = new DirectoryInfo(_parsedReplayDirectory);
             DirectoryInfo errorReplayDirectory = new DirectoryInfo(_errorReplayDirectory);
             if (!parsedReplayDirectory.Exists)
                 parsedReplayDirectory = Directory.CreateDirectory(_parsedReplayDirectory);
@@ -140,24 +142,37 @@ namespace FateReplayParser
                             logger.Trace("Inserting replay data into database");
                             FateDBModule dbModule = new FateDBModule();
                             dbModule.InsertReplayData(fateReplayData, _serverName);
+#if (!DEBUG)
+                            string pathToMoveTo = Path.Combine(parsedReplayDirectory.FullName, file.Name);
+                            if (File.Exists(pathToMoveTo))
+                            {
+                                logger.Trace($"Duplicate file name found for {file.Name} at ParsedReplay directory. File deleted.");
+                                file.Delete();
+                            }
+                            else
+                            {
+                                file.MoveTo(Path.Combine(parsedReplayDirectory.FullName, file.Name));
+                            }
+#endif
                         }
                         else
                         {
                             logger.Trace("Game is not valid. Database insert skipped.");
+#if (!DEBUG)
+                            string pathToMoveTo = Path.Combine(invalidReplayDirectory.FullName, file.Name);
+                            if (File.Exists(pathToMoveTo))
+                            {
+                                logger.Trace($"Duplicate file name found for {file.Name} at InvalidReplay directory. File deleted.");
+                                file.Delete();
+                            }
+                            else
+                            {
+                                file.MoveTo(Path.Combine(invalidReplayDirectory.FullName, file.Name));
+                            }
+#endif
                         }
 
-#if (!DEBUG)
-                        string pathToMoveTo = Path.Combine(parsedReplayDirectory.FullName, file.Name);
-                        if (File.Exists(pathToMoveTo))
-                        {
-                            logger.Trace($"Duplicate file name found for {file.Name} at ParsedReplay directory. File deleted.");
-                            file.Delete();
-                        }
-                        else
-                        {
-                            file.MoveTo(Path.Combine(parsedReplayDirectory.FullName, file.Name));
-                        }
-#endif
+
                     }
                     catch (Exception ex)
                     {

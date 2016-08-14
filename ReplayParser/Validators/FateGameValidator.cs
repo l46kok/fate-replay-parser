@@ -33,6 +33,13 @@ namespace FateReplayParser.Validators
                 return false;
             }
 
+            int maxRoundScore = Math.Max(fateReplayData.TeamOneVictoryCount, fateReplayData.TeamTwoVictoryCount);
+            if (maxRoundScore < 10)
+            {
+                logger.Trace($"Skipping stats insert: Max round score is less than 10 (MaxRoundScore: {maxRoundScore})");
+                return false;
+            }
+
             if (fateReplayData.PlayerInfoList.Count(x => x.Team == 0) !=
                 fateReplayData.PlayerInfoList.Count(x => x.Team == 1))
             {
@@ -45,9 +52,9 @@ namespace FateReplayParser.Validators
         private static bool IsGameDurationValid(ReplayData fateReplayData)
         {
             TimeSpan gameDuration = new TimeSpan(0, 0, 0, 0, (int)fateReplayData.ReplayHeader.ReplayLength);
-            if (gameDuration.TotalMinutes < 20)
+            if (gameDuration.TotalMinutes < 25)
             {
-                logger.Trace("Game duration is too short. Must be 20 minutes or more");
+                logger.Trace("Game duration is too short. Must be 25 minutes or more");
                 return false;
             }
             return true;
