@@ -91,6 +91,10 @@ namespace FateReplayParser
 
             if (!String.IsNullOrEmpty(configHandler.ErrorReplayPath))
                 _errorReplayDirectory = configHandler.ErrorReplayPath;
+            if (!String.IsNullOrEmpty(configHandler.InvalidReplayPath))
+                _invalidReplayDirectory = configHandler.InvalidReplayPath;
+
+
 
             if (!Directory.Exists(_replayFileDirectory))
             {
@@ -114,7 +118,7 @@ namespace FateReplayParser
             _stopWatch.Start();
             DirectoryInfo replayDirectory = new DirectoryInfo(_replayFileDirectory);
             DirectoryInfo parsedReplayDirectory = new DirectoryInfo(_parsedReplayDirectory);
-            DirectoryInfo invalidReplayDirectory = new DirectoryInfo(_parsedReplayDirectory);
+            DirectoryInfo invalidReplayDirectory = new DirectoryInfo(_invalidReplayDirectory);
             DirectoryInfo errorReplayDirectory = new DirectoryInfo(_errorReplayDirectory);
             if (!parsedReplayDirectory.Exists)
                 parsedReplayDirectory = Directory.CreateDirectory(_parsedReplayDirectory);

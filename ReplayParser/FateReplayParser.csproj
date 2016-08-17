@@ -84,6 +84,9 @@
     <Compile Include="Database\attributelearn.cs">
       <DependentUpon>frsDb.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\commandsealuse.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\frsDb.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

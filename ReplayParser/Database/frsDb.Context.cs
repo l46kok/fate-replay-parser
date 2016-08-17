@@ -42,5 +42,6 @@ namespace FateReplayParser.Database
         public virtual DbSet<playerstat> playerstat { get; set; }
         public virtual DbSet<ranking> ranking { get; set; }
         public virtual DbSet<server> server { get; set; }
+        public virtual DbSet<commandsealuse> commandsealuses { get; set; }
     }
 }

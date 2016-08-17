@@ -12,6 +12,7 @@ namespace FateReplayParser.Utility
         public string ErrorReplayPath { get; private set; }
         public string ServerName { get; private set; }
         public string MapVersion { get; private set; }
+        public string InvalidReplayPath { get; private set; }
         public int ParseTimePeriod { get; private set; }
 
         private string _configFilePath;
@@ -35,6 +36,7 @@ namespace FateReplayParser.Utility
             ReplayPath = GetConfigString("replaypath");
             ParsedReplayPath = GetConfigString("parsedreplaypath");
             ErrorReplayPath = GetConfigString("errorreplaypath");
+            InvalidReplayPath = GetConfigString("invalidreplaypath");
             ServerName = GetConfigString("server");
             MapVersion = GetConfigString("mapversion");
             int parsedInt;

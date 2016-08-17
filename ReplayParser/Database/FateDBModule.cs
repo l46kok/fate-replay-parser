@@ -47,6 +47,8 @@ namespace FateReplayParser.Database
                         AddHeroStatLearnDetailToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
                         AddGodsHelpUseToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
                         AddAttributeLearnToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
+                        AddCommandSealUseToDatabase(replayData, db, fateGamePlayerDetailList, fatePlayerList);
+
                         db.SaveChanges(); 
                         trans.Commit();
                     }
@@ -153,6 +155,38 @@ namespace FateReplayParser.Database
                         FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID
                     };
                     db.godshelpuse.Add(godsHelpUsed);
+                }
+            }
+        }
+
+        private static void AddCommandSealUseToDatabase(ReplayData replayData, frsDb db,
+            List<gameplayerdetail> dbPlayerDetailList, List<player> dbPlayerList)
+        {
+            foreach (player player in dbPlayerList)
+            {
+                PlayerInfo playerInfo = replayData.GetPlayerInfoByPlayerName(player.PlayerName);
+                if (playerInfo == null)
+                    throw new InvalidOperationException("Player Name could not be found from replay data (AddCommandSealUseToDatabase): " + player.PlayerName);
+
+                gameplayerdetail gpDetail = dbPlayerDetailList.First(x => x.FK_PlayerID == player.PlayerID);
+
+                var commandSealGroup = playerInfo.CommandSealList.GroupBy(x => x)
+                .Select(group => new
+                {
+                    CommandSealAbilID = group.Key,
+                    UseCount = group.Count()
+                });
+
+                foreach (var commandSeal in commandSealGroup)
+                {
+                    commandsealuse commandSealUsed = new commandsealuse()
+                    {
+                        FK_GamePlayerDetailID = gpDetail.GamePlayerDetailID,
+                        CommandSealAbilID = commandSeal.CommandSealAbilID,
+                        UseCount = commandSeal.UseCount
+
+                    };
+                    db.commandsealuses.Add(commandSealUsed);
                 }
             }
         }

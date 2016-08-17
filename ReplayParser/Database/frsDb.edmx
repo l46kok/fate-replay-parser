@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="frs_testModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="frs_testModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="attributeinfo">
           <Key>
             <PropertyRef Name="AttributeInfoID" />
@@ -17,8 +17,17 @@
           <Key>
             <PropertyRef Name="AttributeLearnID" />
           </Key>
-          <Property Name="AttributeLearnID" Type="int" Nullable="false" StoreGeneratedPattern="Identity"/>
+          <Property Name="AttributeLearnID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FK_AttributeInfoID" Type="int" Nullable="false" />
+          <Property Name="FK_GamePlayerDetailID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="commandsealuse">
+          <Key>
+            <PropertyRef Name="CommandSealUseID" />
+          </Key>
+          <Property Name="CommandSealUseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CommandSealAbilID" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="UseCount" Type="int" Nullable="false" />
           <Property Name="FK_GamePlayerDetailID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="game">
@@ -100,7 +109,7 @@
           <Key>
             <PropertyRef Name="HeroStatLearnID" />
           </Key>
-          <Property Name="HeroStatLearnID" Type="int" Nullable="false" StoreGeneratedPattern="Identity"/>
+          <Property Name="HeroStatLearnID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FK_HeroStatInfoID" Type="int" Nullable="false" />
           <Property Name="FK_GamePlayerDetailID" Type="int" Nullable="false" />
           <Property Name="LearnCount" Type="int" Nullable="false" />
@@ -351,6 +360,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
         <EntityContainer Name="frs_testModelStoreContainer">
           <EntitySet Name="attributeinfo" EntityType="Self.attributeinfo" Schema="frs_test" store:Type="Tables" />
           <EntitySet Name="attributelearn" EntityType="Self.attributelearn" Schema="frs_test" store:Type="Tables" />
+          <EntitySet Name="commandsealuse" EntityType="Self.commandsealuse" Schema="frs_test" store:Type="Tables" />
           <EntitySet Name="game" EntityType="Self.game" Schema="frs_test" store:Type="Tables" />
           <EntitySet Name="gameitempurchase" EntityType="Self.gameitempurchase" Schema="frs_test" store:Type="Tables" />
           <EntitySet Name="gameplayerdetail" EntityType="Self.gameplayerdetail" Schema="frs_test" store:Type="Tables" />
@@ -411,8 +421,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
             <End Role="ranking" EntitySet="ranking" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="frs_testModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -825,7 +834,17 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
             <End Role="server" EntitySet="server" />
             <End Role="ranking" EntitySet="ranking" />
           </AssociationSet>
+          <EntitySet Name="commandsealuses" EntityType="frs_testModel.commandsealuse" />
         </EntityContainer>
+        <EntityType Name="commandsealuse">
+          <Key>
+            <PropertyRef Name="CommandSealUseID" />
+          </Key>
+          <Property Name="CommandSealUseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CommandSealAbilID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="UseCount" Type="Int32" Nullable="false" />
+          <Property Name="FK_GamePlayerDetailID" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1029,6 +1048,16 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="commandsealuses">
+            <EntityTypeMapping TypeName="frs_testModel.commandsealuse">
+              <MappingFragment StoreEntitySet="commandsealuse">
+                <ScalarProperty Name="FK_GamePlayerDetailID" ColumnName="FK_GamePlayerDetailID" />
+                <ScalarProperty Name="UseCount" ColumnName="UseCount" />
+                <ScalarProperty Name="CommandSealAbilID" ColumnName="CommandSealAbilID" />
+                <ScalarProperty Name="CommandSealUseID" ColumnName="CommandSealUseID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -1043,7 +1072,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
