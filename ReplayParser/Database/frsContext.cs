@@ -38,7 +38,7 @@ namespace FateReplayParser.Database
             {
                 ProviderConnectionString = providerString,
                 Provider = "MySql.Data.MySqlClient",
-                Metadata = @"res://*/frsdb.csdl|res://*/frsdb.ssdl|res://*/frsdb.msl",
+                Metadata = @"res://*/Database.frsDb.csdl|res://*/Database.frsDb.ssdl|res://*/Database.frsDb.msl",
             };
         }
 
