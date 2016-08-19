@@ -94,6 +94,22 @@ namespace FateReplayParser
             if (!String.IsNullOrEmpty(configHandler.InvalidReplayPath))
                 _invalidReplayDirectory = configHandler.InvalidReplayPath;
 
+            if (!String.IsNullOrEmpty(configHandler.DatabaseServer) && 
+                !String.IsNullOrEmpty(configHandler.DatabaseName) && 
+                !String.IsNullOrEmpty(configHandler.DatabaseUserName) &&
+                !String.IsNullOrEmpty(configHandler.DatabasePassword))
+            {
+                frsDb.InitDatabaseConnection(configHandler.DatabaseServer,
+                                             configHandler.DatabasePort,
+                                             configHandler.DatabaseUserName,
+                                             configHandler.DatabasePassword,
+                                             configHandler.DatabaseName);
+            }
+            else
+            {
+                logger.Trace("Database connection information is missing. Check your config file (Server, UserName, Password, Database Name)");
+                return;
+            }
 
 
             if (!Directory.Exists(_replayFileDirectory))

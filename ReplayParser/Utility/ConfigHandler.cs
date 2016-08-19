@@ -14,6 +14,11 @@ namespace FateReplayParser.Utility
         public string MapVersion { get; private set; }
         public string InvalidReplayPath { get; private set; }
         public int ParseTimePeriod { get; private set; }
+        public string DatabaseServer { get; private set; }
+        public uint DatabasePort { get; private set; }
+        public string DatabaseUserName { get; private set; }
+        public string DatabasePassword { get; private set; }
+        public string DatabaseName { get; private set; }
 
         private string _configFilePath;
         private readonly List<string> _fileContent = new List<string>();
@@ -44,6 +49,14 @@ namespace FateReplayParser.Utility
             {
                 ParseTimePeriod = parsedInt;
             }
+            DatabaseServer = GetConfigString("databaseserver");
+            if (int.TryParse(GetConfigString("databaseport"), out parsedInt))
+            {
+                DatabasePort = (uint) parsedInt;
+            }
+            DatabaseUserName = GetConfigString("databaseusername");
+            DatabasePassword = GetConfigString("databasepassword");
+            DatabaseName = GetConfigString("databasename");
         }
 
         private string GetConfigString(string key)
@@ -55,7 +68,7 @@ namespace FateReplayParser.Utility
                 if (line[0] == '#') //Config Comment
                     continue;
                 string[] configValueArray = line.Split('=');
-                if (configValueArray.Count() != 2)
+                if (configValueArray.Length != 2)
                     continue;
                 if (configValueArray[0] == key)
                     return configValueArray[1];

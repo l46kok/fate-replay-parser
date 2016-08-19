@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using FateReplayParser.Data;
-using FateReplayParser.Utility;
 using NLog;
 
 namespace FateReplayParser.Database
@@ -13,7 +12,7 @@ namespace FateReplayParser.Database
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public void InsertReplayData(ReplayData replayData, string serverName)
         {
-            using (var db = new frsDb())
+            using (var db = frsDb.Create())
             {
                 using (var trans = db.Database.BeginTransaction())
                 {
