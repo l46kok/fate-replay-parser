@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4DADCDA3-6910-4B16-9E72-3E9205DAA4D0}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FateReplayParser</RootNamespace>
+    <AssemblyName>FateReplayParser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Ionic.Zlib, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\ZLib\Ionic.Zlib.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NDesk.Options, Version=0.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>DLL\NDesk.Options\NDesk.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>DLL\NLog\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog.Extended">
+      <HintPath>DLL\NLog\NLog.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Database\attributeinfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\attributelearn.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\commandsealuse.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\frsContext.cs" />
+    <Compile Include="Database\frsDb.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>frsDb.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\frsDb.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\frsDb.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>frsDb.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Database\game.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\gameitempurchase.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\gameplayerdetail.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\godshelpinfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\godshelpuse.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\herostatinfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\herostatlearn.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\herotype.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\herotypename.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\iteminfo.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\player.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\playerherostat.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\playerstat.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\ranking.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\server.cs">
+      <DependentUpon>frsDb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Parser\FRSEventParser.cs" />
+    <Compile Include="Utility\ConfigHandler.cs" />
+    <Compile Include="Database\FateDBModule.cs" />
+    <Compile Include="Data\DataBlock.cs" />
+    <Compile Include="Data\FRSEvent.cs" />
+    <Compile Include="Data\PlayerInfo.cs" />
+    <Compile Include="Data\ReplayData.cs" />
+    <Compile Include="Data\ReplayHeader.cs" />
+    <Compile Include="Log\Logger.cs" />
+    <Compile Include="Parser\FateReplayHeaderParser.cs" />
+    <Compile Include="Parser\FateReplayParser.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\ArrayExtensions.cs" />
+    <Compile Include="Utility\ByteUtility.cs" />
+    <Compile Include="Utility\StringExtensions.cs" />
+    <Compile Include="Validators\FateGameValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="config.cfg" />
+    <EntityDeploy Include="Database\frsDb.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>frsDb.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Database\frsDb.edmx.diagram">
+      <DependentUpon>frsDb.edmx</DependentUpon>
+    </None>
+    <None Include="DLL\NLog\NLog.mono2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\frsDb.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>frsDb.edmx</DependentUpon>
+      <LastGenOutput>frsDb.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Database\frsDb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>frsDb.edmx</DependentUpon>
+      <LastGenOutput>frsDb.cs</LastGenOutput>
+    </Content>
+    <Content Include="DLL\NDesk.Options\NDesk.Options.dll" />
+    <Content Include="DLL\NLog\NLog.dll" />
+    <Content Include="DLL\NLog\NLog.dll.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DLL\NLog\NLog.Extended.dll" />
+    <Content Include="DLL\NLog\NLog.Extended.dll.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DLL\NLog\NLog.Extended.xml" />
+    <Content Include="DLL\NLog\NLog.xml" />
+    <Content Include="DLL\ZLib\Ionic.Zlib.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
