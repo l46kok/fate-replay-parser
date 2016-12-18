@@ -40,8 +40,8 @@ namespace FateReplayParser.Validators
                 return false;
             }
 
-            if (fateReplayData.PlayerInfoList.Count(x => x.Team == 0) !=
-                fateReplayData.PlayerInfoList.Count(x => x.Team == 1))
+            if (fateReplayData.PlayerInfoList.Count(x => x.Team == 0 && !x.IsObserver) !=
+                fateReplayData.PlayerInfoList.Count(x => x.Team == 1 && !x.IsObserver))
             {
                 logger.Trace($"Skipping stats insert: Uneven Teams");
                 return false;
