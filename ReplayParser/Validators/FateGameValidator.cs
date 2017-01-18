@@ -27,7 +27,7 @@ namespace FateReplayParser.Validators
                 return false;
             }
 
-            if (fateReplayData.PlayerCount < 6)
+            if (fateReplayData.PlayerCount < 8)
             {
                 logger.Trace($"Skipping stats insert: Not Enough players: (Players: {fateReplayData.PlayerCount})");
                 return false;
