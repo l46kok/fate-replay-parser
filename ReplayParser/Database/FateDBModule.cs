@@ -395,7 +395,7 @@ namespace FateReplayParser.Database
                     GameName = replayData.GameName,
                     Log = String.Join("\n",replayData.GameChatMessage.ToArray()),
                     MatchType = replayData.GameMode.ToString(),
-                    MapVersion = replayData.MapVersion,
+                    MapVersion = ReplayData.MapVersion,
                     Duration = new TimeSpan(0, 0, 0, 0, (int) replayData.ReplayHeader.ReplayLength),
                     PlayedDate = replayData.GameDateTime,
                     ReplayUrl = replayData.ReplayUrl,
