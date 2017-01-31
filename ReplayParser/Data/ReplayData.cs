@@ -36,6 +36,8 @@ namespace FateReplayParser.Data
     }
     public class ReplayData
     {
+        public static string MapVersion { get; set; }
+
         private readonly Dictionary<int, PlayerInfo> _playerInfoDicByGameId = new Dictionary<int, PlayerInfo>();
         private readonly Dictionary<int, PlayerInfo> _playerInfoDicByReplayId = new Dictionary<int, PlayerInfo>();
         private readonly Dictionary<string, PlayerInfo> _playerInfoDicByName = new Dictionary<string, PlayerInfo>(StringComparer.OrdinalIgnoreCase);
@@ -55,7 +57,6 @@ namespace FateReplayParser.Data
         public int TeamTwoVictoryCount { get; set; }
         public int DrawCount { get; set; }
         public DateTime GameDateTime { get; set; }
-        public string MapVersion { get; set; }
         public string ReplayUrl { get; set; }
 
         public ReplayData(byte[] replayFileBytes)

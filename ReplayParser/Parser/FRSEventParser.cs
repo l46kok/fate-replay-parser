@@ -12,6 +12,7 @@ namespace FateReplayParser.Parser
         private static readonly Dictionary<string, Action<FRSEvent, ReplayData>> _eventHandlerDic = new Dictionary
             <string, Action<FRSEvent, ReplayData>>
         {
+            {"MapNameVer", ParseMapNameVer },
             {"GameMode", ParseGameMode},
             {"PracticeMode", ParsePracticeMode},
             {"RoundVictory", ParseRoundVictory},
@@ -29,7 +30,6 @@ namespace FateReplayParser.Parser
             {"Forfeit", ParseForfeit},
         };
 
-
         /// <summary>
         /// Parses a list of FRSEvent, then fills replayData with parsed information
         /// </summary>
@@ -41,6 +41,12 @@ namespace FateReplayParser.Parser
             {
                 _eventHandlerDic[frsEvent.EventCategory](frsEvent, replayData);
             }
+        }
+
+        private static void ParseMapNameVer(FRSEvent frsEvent, ReplayData replayData)
+        {
+            string eventDetail = frsEvent.EventDetail;
+            ReplayData.MapVersion = eventDetail;
         }
 
         private static void ParseGameMode(FRSEvent frsEvent, ReplayData replayData)
