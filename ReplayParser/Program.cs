@@ -154,7 +154,10 @@ namespace FateReplayParser
                         logger.Trace("Started parsing replay file: " + file.Name);
                         Parser.FateReplayParser fateReplayParser = new Parser.FateReplayParser(file.FullName);
                         ReplayData fateReplayData = fateReplayParser.ParseReplayData();
-                        ReplayData.MapVersion = configHandler.MapVersion;
+                        if (String.IsNullOrEmpty(configHandler.MapVersion))
+                        {
+                            ReplayData.MapVersion = configHandler.MapVersion;
+                        }
                         logger.Trace("Finished parsing replay file: " + file.Name);
 
                         if (FateGameValidator.IsFateGameValid(fateReplayData))
