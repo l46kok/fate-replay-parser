@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using FateReplayParser.Data;
 using FateReplayParser.Utility;
 using NLog;
@@ -18,6 +19,8 @@ namespace FateReplayParser.Parser
         private const string ERROR_FILE_BYTE_LENGTH_TOO_SMALL = "Replay file's byte length is too small: {0}";
         private const string ERROR_DATA_BLOCK_IS_EMPTY = "Replay Datablock is empty";
         private const int REPLAY_MINIMUM_BYTE_LENGTH = 288;
+        private const int READ_MAX_TRY = 3;
+        private const int READ_RETRY_DELAY = 1000;
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         //Unfiltered list of event calls from Fate map.
@@ -44,6 +47,22 @@ namespace FateReplayParser.Parser
                 throw new ArgumentException(String.Format(ERROR_FILE_EXTENSION_NOT_SUPPORTED, _replayFilePath));
             }
 
+            for (int i = 0; i < READ_MAX_TRY; i++)
+            {
+                try
+                {
+                    // Ensure that file can be opened
+                    var fileStream = File.Open(_replayFilePath, FileMode.Open, FileAccess.Read);
+                    fileStream.Close();
+                    break;
+                }
+                catch (IOException)
+                {
+                    logger.Trace($"File Open Failure [Trial #{i + 1}]");
+                    Thread.Sleep(READ_RETRY_DELAY);
+                }
+            }
+            
             byte[] replayFileBytes = File.ReadAllBytes(_replayFilePath);
             if (replayFileBytes.Length < REPLAY_MINIMUM_BYTE_LENGTH)
             {

@@ -200,7 +200,7 @@ namespace FateReplayParser
                     catch (Exception ex)
                     {
                         logger.Error("Error occurred on parsing the following replay file: " + file.Name + Environment.NewLine);
-                        logger.Trace(ex + Environment.NewLine);
+                        logger.Error(ex + Environment.NewLine);
 #if (!DEBUG)
                         string pathToMoveTo = Path.Combine(errorReplayDirectory.FullName, file.Name);
                         if (File.Exists(pathToMoveTo))
