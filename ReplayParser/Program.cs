@@ -94,8 +94,8 @@ namespace FateReplayParser
             if (!String.IsNullOrEmpty(configHandler.InvalidReplayPath))
                 _invalidReplayDirectory = configHandler.InvalidReplayPath;
 
-            if (!String.IsNullOrEmpty(configHandler.DatabaseServer) && 
-                !String.IsNullOrEmpty(configHandler.DatabaseName) && 
+            if (!String.IsNullOrEmpty(configHandler.DatabaseServer) &&
+                !String.IsNullOrEmpty(configHandler.DatabaseName) &&
                 !String.IsNullOrEmpty(configHandler.DatabaseUserName) &&
                 !String.IsNullOrEmpty(configHandler.DatabasePassword))
             {
@@ -154,7 +154,7 @@ namespace FateReplayParser
                         logger.Trace("Started parsing replay file: " + file.Name);
                         Parser.FateReplayParser fateReplayParser = new Parser.FateReplayParser(file.FullName);
                         ReplayData fateReplayData = fateReplayParser.ParseReplayData();
-                        if (String.IsNullOrEmpty(configHandler.MapVersion))
+                        if (String.IsNullOrEmpty(ReplayData.MapVersion))
                         {
                             ReplayData.MapVersion = configHandler.MapVersion;
                         }

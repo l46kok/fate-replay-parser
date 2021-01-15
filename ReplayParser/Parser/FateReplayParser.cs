@@ -124,7 +124,8 @@ namespace FateReplayParser.Parser
             catch (Exception ex)
             {
                 logger.Error(ex.ToString);
-                return null;
+                // Fallback to current date
+                return DateTime.Now;
             }
         }
         
@@ -474,7 +475,10 @@ namespace FateReplayParser.Parser
                 currIndex += 4;
 
                 //Skip null byte
-                currIndex++;
+                while (gameHeaderData[currIndex] == 0x00)
+                {
+                    currIndex++;
+                }
             }
             
             //Skip Record Id (Section 4.10, always 0x19)
