@@ -11,7 +11,7 @@
           </Key>
           <Property Name="AttributeInfoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AttributeAbilID" Type="varchar" MaxLength="4" Nullable="false" />
-          <Property Name="AttributeName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="AttributeName" Type="varchar" MaxLength="60" Nullable="false" />
         </EntityType>
         <EntityType Name="attributelearn">
           <Key>
@@ -46,6 +46,7 @@
           <Property Name="Log" Type="mediumtext" />
           <Property Name="TeamOneWinCount" Type="int" Nullable="false" />
           <Property Name="TeamTwoWinCount" Type="int" Nullable="false" />
+          <Property Name="IsForfeitedGame" Type="bool" Nullable="false" />
         </EntityType>
         <EntityType Name="gameitempurchase">
           <Key>
@@ -459,6 +460,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
           <Property Name="TeamTwoWinCount" Type="Int32" Nullable="false" />
           <NavigationProperty Name="server" Relationship="Self.fk_Game_Server" FromRole="game" ToRole="server" />
           <NavigationProperty Name="gameplayerdetail" Relationship="Self.fk_GamePlayerDetail_Game1" FromRole="game" ToRole="gameplayerdetail" />
+          <Property Name="IsForfeitedGame" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="gameitempurchase">
           <Key>
@@ -872,6 +874,7 @@ warning 6035: The relationship 'fk_Ranking_PlayerStat1' has columns that are not
           <EntitySetMapping Name="game">
             <EntityTypeMapping TypeName="frs_testModel.game">
               <MappingFragment StoreEntitySet="game">
+                <ScalarProperty Name="IsForfeitedGame" ColumnName="IsForfeitedGame" />
                 <ScalarProperty Name="GameID" ColumnName="GameID" />
                 <ScalarProperty Name="FK_ServerID" ColumnName="FK_ServerID" />
                 <ScalarProperty Name="GameName" ColumnName="GameName" />

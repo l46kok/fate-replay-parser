@@ -28,6 +28,12 @@ namespace FateReplayParser.Data
         NONE
     };
 
+    public enum ForfeitedTeam
+    {
+        T1,
+        T2
+    }
+
     public enum GamePlayerResult
     {
         WIN,
@@ -54,6 +60,8 @@ namespace FateReplayParser.Data
         public string GameName { get; set; }
         public uint PlayerCount { get; set; }
         public int TeamOneVictoryCount { get; set; }
+        public bool IsForfeitedGame { get; set; }
+        public ForfeitedTeam ForfeitedTeam { get; set; }
         public int TeamTwoVictoryCount { get; set; }
         public int DrawCount { get; set; }
         public DateTime GameDateTime { get; set; }

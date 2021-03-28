@@ -32,6 +32,7 @@ namespace FateReplayParser.Database
         public string Log { get; set; }
         public int TeamOneWinCount { get; set; }
         public int TeamTwoWinCount { get; set; }
+        public bool IsForfeitedGame { get; set; }
     
         public virtual server server { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

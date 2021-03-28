@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using FateReplayParser.Data;
 using NLog;
@@ -403,13 +404,31 @@ namespace FateReplayParser.Database
                     TeamOneWinCount = replayData.TeamOneVictoryCount,
                     TeamTwoWinCount = replayData.TeamTwoVictoryCount
                 };
-            if (replayData.TeamOneVictoryCount > replayData.TeamTwoVictoryCount)
-                fateGame.Result = GameResult.T1W.ToString();
-            else if (replayData.TeamOneVictoryCount < replayData.TeamTwoVictoryCount)
-                fateGame.Result = GameResult.T2W.ToString();
+            if (replayData.IsForfeitedGame)
+            {
+                fateGame.IsForfeitedGame = true;
+                if (replayData.ForfeitedTeam == ForfeitedTeam.T1)
+                {
+                    fateGame.Result = GameResult.T2W.ToString();
+                }
+                else if (replayData.ForfeitedTeam == ForfeitedTeam.T2)
+                {
+                    fateGame.Result = GameResult.T1W.ToString();
+                }
+                else
+                {
+                    throw new InvalidDataException("Could not determine forfeiting team");
+                }
+            }
             else
-                fateGame.Result = GameResult.NONE.ToString();
-
+            {
+                if (replayData.TeamOneVictoryCount > replayData.TeamTwoVictoryCount)
+                    fateGame.Result = GameResult.T1W.ToString();
+                else if (replayData.TeamOneVictoryCount < replayData.TeamTwoVictoryCount)
+                    fateGame.Result = GameResult.T2W.ToString();
+                else
+                    fateGame.Result = GameResult.NONE.ToString();
+            }
             return fateGame;
         }
 

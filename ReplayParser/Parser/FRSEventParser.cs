@@ -166,7 +166,8 @@ namespace FateReplayParser.Parser
 
         private static void ParseForfeit(FRSEvent frsEvent, ReplayData replayData)
         {
-
+            replayData.IsForfeitedGame = true;
+            replayData.ForfeitedTeam = (ForfeitedTeam) Enum.Parse(typeof(ForfeitedTeam), frsEvent.EventDetail);
         }
 
         private static void ParseGodsHelp(FRSEvent frsEvent, ReplayData replayData)
